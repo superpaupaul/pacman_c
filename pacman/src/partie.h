@@ -7,7 +7,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define NBFANTOMES  1 // nombres de fantômes dans les plateaux chargés
+#define SIZEX 25 // longueur d'une case
+#define SIZEY 25 // hauteur d'une case
+#define NBFANTOMES  4 // nombres de fantômes dans les plateaux chargés
 
 // STRUCTURES
 /* Structure Pos: permet de stocker un couple ligne/colonne                   */
@@ -24,7 +26,10 @@ typedef struct partie {
     Pos     pacman; // la position de Pacman dans le plateau
     Pos     fantomes[NBFANTOMES]; // les positions de chaque fantôme
     int     nbbonus; // le nombre de bonus restants à manger
-    // ...et vous pouvez ajouter tout ce dont vous avez besoin
+    int     LONGUEUR; // longueur fenêtre graphique
+    int     HAUTEUR; // hauteur fenêtre graphique
+    int     taillex; // longueur du rectangle en pixel
+    int     tailley; // hauteur du rectangle en pixel
     } Partie;
 
 // PROTOTYPES
@@ -32,4 +37,11 @@ typedef struct partie {
                     en mémoire, dans le champ 'plateau' d'une Partie */
 Partie charge_plan(char *fichier);
 
+void affiche_plan(Partie p); // affiche le plan graphiquement
+
+Partie get_size(Partie p); // renvoie la longueur, hauteur de la case dans p
+
+void debut_graphique(Partie p); // lance la fenêtre graphique avec les dimensions p.taillex et p.tailley calculées dans get_size()
+
+void fin_graphique(); // attend un clic puis termine la session graphique
 #endif

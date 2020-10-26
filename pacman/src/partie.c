@@ -2,7 +2,7 @@
 /* CHARGEMENT.c                                                               */
 /******************************************************************************/
 #include "./partie.h"
-
+#include "../lib/libgraphique.h"
 
 /******************************************************************************/
 /* CHARGE PLAN                                                                */
@@ -161,3 +161,60 @@ Partie charge_plan(char *fichier)
     return p;
     }
 
+
+/*****************************************/
+/*			affiche_plan				 */ 
+/*****************************************/
+
+void affiche_plan(Partie p)
+	{
+		Point position = {0,0};
+		for(int i = 0; i < p.L; i++)
+		{
+			position.x = 0;
+			for (int j = 0; j < p.C; j++)
+			{
+				char obj = p.plateau[i][j];	// l'objet peut être un mur, un bonus, rien ou un fantome
+				switch (obj)
+					{
+						case '*':
+							dessiner_rectangle(position,p.taillex,p.tailley,noir);
+							break;
+						case ' ':
+							dessiner_rectangle(position,p.taillex,p.tailley,blanc);
+							break;
+						case 'B':
+							dessiner_rectangle(position,p.taillex,p.tailley,jaune);
+							break;
+						case 'F':
+							dessiner_rectangle(position,p.taillex,p.tailley,rouge);
+							break;
+						case 'P':
+							dessiner_rectangle(position,p.taillex,p.tailley,bleu);
+							break;
+						default:
+							break;
+
+					}
+				position.x += p.taillex;
+			}
+			position.y += p.tailley;
+		}
+	}
+
+Partie get_size(Partie p) 
+	{
+		p.taillex = SIZEX;
+		p.tailley = SIZEY;
+		return p;
+	}
+
+void debut_graphique(Partie p)
+	{
+		ouvrir_fenetre(p.LONGUEUR,p.HAUTEUR);
+	}
+void fin_graphique()
+	{
+		attendre_clic();
+		fermer_fenetre();
+	}

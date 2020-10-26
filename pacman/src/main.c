@@ -2,7 +2,7 @@
 /* MAIN.c                                                                     */
 /******************************************************************************/
 #include "./main.h"
-
+#include "./partie.h"
 
 /******************************************************************************/
 /* MAIN                                                                       */
@@ -43,6 +43,17 @@ int main(int argc, char **argv)
 /******************************************************************************/
 /* A PARTIR D'ICI...C'EST A VOUS DE JOUER!                                    */
 /******************************************************************************/
+    p = get_size(p);
+    p.LONGUEUR = p.C * p.taillex;
+    p.HAUTEUR = p.L * p.tailley;
+
+    // DEBUT SESSION GRAPHIQUE
+	debut_graphique(p);
+	affiche_plan(p);
+	actualiser();
+	// FIN SESSION GRAPHIQUE
+	fin_graphique();
+
     return 0;
     }
 
