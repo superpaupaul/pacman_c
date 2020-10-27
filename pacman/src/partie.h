@@ -44,4 +44,11 @@ Partie get_size(Partie p); // renvoie la longueur, hauteur de la case dans p
 void debut_graphique(Partie p); // lance la fenêtre graphique avec les dimensions p.taillex et p.tailley calculées dans get_size()
 
 void fin_graphique(); // attend un clic puis termine la session graphique
+
+void lancer_partie(Partie p); // gère la partie
+
+Partie deplacement_joueur(Partie p); // déplacements de pacman
+
+void dessiner_sprite(Partie p, int i, int j); // dessine graphiquement en fonction de se qui se trouve sur le plateau à la position i,j
+
 #endif

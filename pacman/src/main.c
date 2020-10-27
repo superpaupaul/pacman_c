@@ -51,6 +51,7 @@ int main(int argc, char **argv)
 	debut_graphique(p);
 	affiche_plan(p);
 	actualiser();
+	lancer_partie(p);
 	// FIN SESSION GRAPHIQUE
 	fin_graphique();
 

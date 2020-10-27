@@ -218,3 +218,102 @@ void fin_graphique()
 		attendre_clic();
 		fermer_fenetre();
 	}
+
+void lancer_partie(Partie p)
+	{
+		while(1)
+		{
+			p = deplacement_joueur(p);
+			actualiser();
+		}
+	}
+
+Partie deplacement_joueur(Partie p)
+	{
+		int touche = attendre_touche();
+		switch(touche)
+			{
+				case SDLK_LEFT:
+					if (p.pacman.c - 1 >= 0) // on ne sort pas des indexs du plateau
+					{
+						if (p.plateau[p.pacman.c - 1][p.pacman.l] == ' ' || p.plateau[p.pacman.c - 1][p.pacman.l] == 'B')
+						{
+							p.plateau[p.pacman.c][p.pacman.l] = ' '; // remplace le 'P' dans le plateau par un ' '
+							dessiner_sprite(p,p.pacman.c,p.pacman.l); // redessine le ' ' à l'ancienne place de pacman
+							p.plateau[p.pacman.c - 1][p.pacman.l] = 'P'; // ajoute nouvelle pos de pacman au plateau
+							dessiner_sprite(p,p.pacman.c - 1,p.pacman.l); // dessine pacman à sa nouvelle pos
+							printf("gauche\n");
+						}
+					}
+					break;
+				case SDLK_UP:
+					if (p.pacman.l - 1 >= 0)
+					{
+						if (p.plateau[p.pacman.c][p.pacman.l - 1] == ' ' || p.plateau[p.pacman.c][p.pacman.l - 1] == 'B')
+						{
+							p.plateau[p.pacman.c][p.pacman.l] = ' ';
+							dessiner_sprite(p,p.pacman.c,p.pacman.l);
+							p.plateau[p.pacman.c][p.pacman.l - 1] = 'P';
+							dessiner_sprite(p,p.pacman.c,p.pacman.l - 1);
+							printf("haut\n");
+						}
+					}
+					break;
+				case SDLK_RIGHT:
+					if (p.pacman.c + 1 < p.C)
+					{
+						if (p.plateau[p.pacman.c + 1][p.pacman.l] == ' ' || p.plateau[p.pacman.c + 1][p.pacman.l] == 'B')
+						{
+							p.plateau[p.pacman.c][p.pacman.l] = ' ';
+							dessiner_sprite(p,p.pacman.c,p.pacman.l);
+							p.plateau[p.pacman.c + 1][p.pacman.l] = 'P';
+							dessiner_sprite(p,p.pacman.c + 1,p.pacman.l);
+							printf("droite\n");
+						}
+					}
+					break;
+				case SDLK_DOWN:
+					if (p.pacman.l + 1 < p.L)
+					{
+						if (p.plateau[p.pacman.c][p.pacman.l + 1] == ' ' || p.plateau[p.pacman.c][p.pacman.l + 1] == 'B')
+						{
+							p.plateau[p.pacman.c][p.pacman.l] = ' ';
+							dessiner_sprite(p,p.pacman.c,p.pacman.l);
+							p.plateau[p.pacman.c][p.pacman.l + 1] = 'P';
+							dessiner_sprite(p,p.pacman.c,p.pacman.c + 1);
+							printf("bas\n");
+						}
+					}
+					break;
+				default:
+					printf("Touche inconnue\n");
+					break;
+			}
+		return p;
+	}
+
+void dessiner_sprite(Partie p, int i, int j)
+	{
+		char sprite = p.plateau[i][j];
+		Point position = {i*p.taillex,j*p.tailley};
+		switch (sprite)
+			{
+				case ' ':
+					dessiner_rectangle(position,p.taillex,p.tailley,blanc);
+					break;
+				case '*':
+					dessiner_rectangle(position,p.taillex,p.tailley,noir);
+					break;
+				case 'B':
+					dessiner_rectangle(position,p.taillex,p.tailley,jaune);
+					break;
+				case 'F':
+					dessiner_rectangle(position,p.taillex,p.tailley,rouge);
+					break;
+				case 'P':
+					dessiner_rectangle(position,p.taillex,p.tailley,bleu);
+					break;
+				default:
+					break;
+			}
+	}
