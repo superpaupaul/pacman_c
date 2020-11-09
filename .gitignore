@@ -1,2 +1,4 @@
 # Mettre ici tous les fichiers inutiles et lourds qu'on ne veut pas push
 # Genre .obj 
+.bin
+.obj
