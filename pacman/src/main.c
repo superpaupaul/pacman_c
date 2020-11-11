@@ -43,9 +43,8 @@ int main(int argc, char **argv)
 /******************************************************************************/
 /* A PARTIR D'ICI...C'EST A VOUS DE JOUER!                                    */
 /******************************************************************************/
-    p = get_size(p);
-    p.LONGUEUR = p.C * p.taillex;
-    p.HAUTEUR = p.L * p.tailley;
+    p.LONGUEUR = p.C * SIZEX;
+    p.HAUTEUR = p.L * SIZEY;
 
     // DEBUT SESSION GRAPHIQUE
 	debut_graphique(p);

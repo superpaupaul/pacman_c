@@ -168,46 +168,16 @@ Partie charge_plan(char *fichier)
 
 void affiche_plan(Partie p)
 	{
-		Point position = {0,0};
 		for(int i = 0; i < p.L; i++)
 		{
-			position.x = 0;
 			for (int j = 0; j < p.C; j++)
 			{
-				char obj = p.plateau[i][j];	// l'objet peut être un mur, un bonus, rien ou un fantome
-				switch (obj)
-					{
-						case '*':
-							dessiner_rectangle(position,p.taillex,p.tailley,noir);
-							break;
-						case ' ':
-							dessiner_rectangle(position,p.taillex,p.tailley,blanc);
-							break;
-						case 'B':
-							dessiner_rectangle(position,p.taillex,p.tailley,jaune);
-							break;
-						case 'F':
-							dessiner_rectangle(position,p.taillex,p.tailley,rouge);
-							break;
-						case 'P':
-							dessiner_rectangle(position,p.taillex,p.tailley,bleu);
-							break;
-						default:
-							break;
-
-					}
-				position.x += p.taillex;
+				Pos pos = {i,j};
+				dessiner_sprite(p,pos);
 			}
-			position.y += p.tailley;
 		}
 	}
 
-Partie get_size(Partie p) 
-	{
-		p.taillex = SIZEX;
-		p.tailley = SIZEY;
-		return p;
-	}
 
 void debut_graphique(Partie p)
 	{
@@ -226,107 +196,213 @@ void lancer_partie(Partie p)
 			int touche = attendre_touche();
 			p = deplacement_joueur(p, touche);
 			actualiser();
-			attente(400);
+			attente(100);
 		}
 	}
 	
 Partie deplacement_joueur(Partie p, int touche)
 	{
+		int tunnel = 0;
 		Pos pac = Get_Pacman_Pos(p);
+		char char_dest = ' ';
 		printf("Position pacman: ligne %d, colonne %d\n",pac.l,pac.c);
 		switch(touche)
 			{
 				case SDLK_LEFT:
 					
-					if (pac.c - 1 >= 0) // on ne sort pas des indexs du plateau
-					{ 
-						char char_dest = p.plateau[pac.l][pac.c - 1]; // le char du plateau là où le joueur veut aller
-						if (char_dest == ' ')
-						{
-							printf("gauche\n");
-							p.plateau[pac.l][pac.c] = ' '; // remplace le 'P' dans le plateau par un ' '
-							dessiner_sprite(p,pac); // redessine le ' ' à l'ancienne place de pacman
-							p.plateau[pac.l][pac.c - 1] = 'P'; // ajoute nouvelle pos de pacman au plateau
-							pac.c--; // update nouvelle pos de pacman
-							dessiner_sprite(p,pac); // dessine pacman à sa nouvelle pos
-						}
+					if (pac.c == 0) // tunnel?
+					{
+						printf("TUNNELLLL\n");
+						char_dest = p.plateau[pac.l][p.C - 1]; // si le joueur prend un tunnel à gauche, il se retrouve à droite, même ligne
+						tunnel = 1;
+						
 					}
+					else
+					{
+						char_dest = p.plateau[pac.l][pac.c - 1]; // le char du plateau là où le joueur veut aller
+					}
+	
+					if (char_dest == VIDE || char_dest == POINT || char_dest == BONUS)
+					{
+						if (char_dest == BONUS)
+						{
+							/* à implémenter */
+						}
+						if (char_dest == POINT)
+						{
+							/* code */
+						}
+
+						p.plateau[pac.l][pac.c] = VIDE; // remplace le 'P' dans le plateau par un ' '
+						dessiner_sprite(p,pac); // redessine le ' ' à l'ancienne place de pacman
+
+						if (tunnel)
+						{
+							p.plateau[pac.l][p.C - 1] = PACMAN; //update les coordonnées de pacman tout à droite du plateau
+							pac.c = p.C - 1; 
+							printf("TUNNELLLL\n");
+						}
+						
+						else
+						{
+							p.plateau[pac.l][pac.c - 1] = PACMAN; // ajoute nouvelle pos de pacman au plateau
+							pac.c--; // update nouvelle pos de pacman
+						}
+
+						dessiner_sprite(p,pac); // dessine pacman à sa nouvelle pos
+						
+					}
+						
+						
 					break;
 				case SDLK_UP:
 				
-					if (pac.l - 1 >= 0)
-					{ 
-						char char_dest = p.plateau[pac.l - 1][pac.c];
-						if (char_dest == ' ')
+					if (pac.l == 0)
+					{
+						char_dest = p.plateau[p.L - 1][pac.c];
+						tunnel = 1;
+					}
+					else
+					{
+						char_dest = p.plateau[pac.l - 1][pac.c];
+					}
+					if (char_dest == VIDE || char_dest == POINT || char_dest == BONUS)
+					{
+						if (char_dest == BONUS)
 						{
-							printf("haut\n");
-							p.plateau[pac.l][pac.c] = ' ';
-							dessiner_sprite(p,pac);
-							p.plateau[pac.l - 1][pac.c] = 'P';
-							pac.l--;
-							dessiner_sprite(p,pac);
+							/* à implémenter */
 						}
+						if (char_dest == POINT)
+						{
+							/* code */
+						}
+						p.plateau[pac.l][pac.c] = VIDE;
+						dessiner_sprite(p,pac);
+						if (tunnel)
+						{
+							p.plateau[p.L - 1][pac.c] = PACMAN;
+							pac.l = p.L - 1;
+						}
+						else
+						{
+							p.plateau[pac.l - 1][pac.c] = PACMAN;
+							pac.l--;
+						}
+						dessiner_sprite(p,pac);
 					}
 					break;
 				case SDLK_RIGHT:
 					
-					if (pac.c + 1 < p.C)
-					{ 
-						char char_dest = p.plateau[pac.l][pac.c + 1];
-						if (char_dest == ' ')
+					if (pac.c == p.C - 1)
+					{
+						char_dest = p.plateau[pac.l][0];
+						tunnel = 1;
+					}
+					else
+					{
+						char_dest = p.plateau[pac.l][pac.c + 1];
+					}
+					
+					if (char_dest == VIDE || char_dest == POINT || char_dest == BONUS)
+					{
+						if (char_dest == BONUS)
 						{
-							printf("droite\n");
-							p.plateau[pac.l][pac.c] = ' ';
-							dessiner_sprite(p,pac);
-							p.plateau[pac.l][pac.c + 1] = 'P';
-							pac.c++;
-							dessiner_sprite(p,pac);
+							/* à implémenter */
 						}
+						if (char_dest == POINT)
+						{
+							/* code */
+						}
+						p.plateau[pac.l][pac.c] = VIDE;
+						dessiner_sprite(p,pac);
+						if (tunnel)
+						{
+							p.plateau[pac.l][0] = PACMAN;
+							pac.c = 0;
+						}
+						else
+						{
+							p.plateau[pac.l][pac.c + 1] = PACMAN;
+							pac.c++;
+						}
+						dessiner_sprite(p,pac);
 					}
 					break;
 				case SDLK_DOWN:
 					
-					if (pac.l + 1 < p.L)
-					{ 
-						char char_dest = p.plateau[pac.l + 1][pac.c];
-						if (char_dest == ' ')
+					if (pac.l == p.L - 1)
+					{
+						char_dest = p.plateau[0][pac.c];
+						tunnel = 1;
+					}
+					else
+					{
+						char_dest = p.plateau[pac.l + 1][pac.c];
+					}
+					
+					if (char_dest == VIDE || char_dest == POINT || char_dest == BONUS)
+					{
+						if (char_dest == BONUS)
 						{
-							printf("bas\n");
-							p.plateau[pac.l][pac.c] = ' ';
-							dessiner_sprite(p,pac);
-							p.plateau[pac.l + 1][pac.c] = 'P';
-							pac.l++;
-							dessiner_sprite(p,pac);
+							/* à implémenter */
 						}
+						if (char_dest == POINT)
+						{
+							/* code */
+						}
+						p.plateau[pac.l][pac.c] = VIDE;
+						dessiner_sprite(p,pac);
+						if (tunnel)
+						{
+							p.plateau[0][pac.c] = PACMAN;
+							pac.l = 0;
+						}
+						else
+						{
+							p.plateau[pac.l + 1][pac.c] = PACMAN;
+							pac.l++;
+						}
+						dessiner_sprite(p,pac);
 					}
 					break;
 				default:
 					printf("Touche inconnue\n");
 					break;
 			}
+		p.pacman = pac;
 		return p;
 	}
 
 void dessiner_sprite(Partie p, Pos pos)
 	{
-		Point point = Pos_to_Point(p,pos);
+		Point point = Pos_to_Point(pos);
 		char c = p.plateau[pos.l][pos.c];
+		Point centre = {0,0};
 		switch (c)
 			{
-				case ' ':
-					dessiner_rectangle(point,p.taillex,p.tailley,blanc);
+				case VIDE:
+					dessiner_rectangle(point,SIZEX,SIZEY,blanc);
 					break;
-				case '*':
-					dessiner_rectangle(point,p.taillex,p.tailley,noir);
+				case POINT:
+					dessiner_rectangle(point,SIZEX,SIZEY,blanc);
+					centre.x = point.x + SIZEX/2;
+					centre.y = point.y + SIZEY/2;
+					dessiner_disque(centre,(int)SIZEX/4,jaune);
 					break;
-				case 'B':
-					dessiner_rectangle(point,p.taillex,p.tailley,jaune);
+				case MUR:
+					dessiner_rectangle(point,SIZEX,SIZEY,noir);
 					break;
-				case 'F':
-					dessiner_rectangle(point,p.taillex,p.tailley,rouge);
+				case BONUS:
+					dessiner_rectangle(point,SIZEX,SIZEY,blanc);
+					centre.x = point.x + SIZEX/2;
+					centre.y = point.y + SIZEY/2;
+					dessiner_disque(centre,(int)SIZEX/2,jaune);
 					break;
-				case 'P':
-					dessiner_rectangle(point,p.taillex,p.tailley,bleu);
+				case FANTOME:
+					dessiner_rectangle(point,SIZEX,SIZEY,rouge);
+					break;
+				case PACMAN:
+					dessiner_rectangle(point,SIZEX,SIZEY,bleu);
 					break;
 				default:
 					break;
@@ -354,8 +430,8 @@ Pos Get_Pacman_Pos(Partie p)
 		}
 		return res;
 	}
-Point Pos_to_Point(Partie p, Pos pos)
+Point Pos_to_Point(Pos pos)
 	{
-		Point res = {pos.c*p.taillex,pos.l*p.tailley};
+		Point res = {pos.c*SIZEX,pos.l*SIZEY};
 		return res;
 	}
