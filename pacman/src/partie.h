@@ -7,9 +7,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define SIZEX 25 // longueur d'une case
+#define SIZEX 25 // longueur d'une case en pixels
 #define SIZEY 25 // hauteur d'une case
-#define NBFANTOMES  4 // nombres de fantômes dans les plateaux chargés
+#define NBFANTOMES 4 // nombres de fantômes dans les plateaux chargés
+#define MUR '*'
+#define POINT '.'
+#define PACMAN 'P'
+#define FANTOME 'F'
+#define BONUS 'B'
+#define VIDE ' '
 #include "../lib/libgraphique.h" // j'ai ajouté
 // STRUCTURES
 /* Structure Pos: permet de stocker un couple ligne/colonne                   */
@@ -28,8 +34,6 @@ typedef struct partie {
     int     nbbonus; // le nombre de bonus restants à manger
     int     LONGUEUR; // longueur fenêtre graphique
     int     HAUTEUR; // hauteur fenêtre graphique
-    int     taillex; // longueur du rectangle en pixel
-    int     tailley; // hauteur du rectangle en pixel
     } Partie;
 
 // PROTOTYPES
@@ -38,8 +42,6 @@ typedef struct partie {
 Partie charge_plan(char *fichier);
 
 void affiche_plan(Partie p); // affiche le plan graphiquement
-
-Partie get_size(Partie p); // renvoie la longueur, hauteur de la case dans p
 
 void debut_graphique(Partie p); // lance la fenêtre graphique avec les dimensions p.taillex et p.tailley calculées dans get_size()
 
@@ -53,6 +55,6 @@ void dessiner_sprite(Partie p, Pos pos); // dessine graphiquement en fonction de
 
 Pos Get_Pacman_Pos(Partie p); // renvoie la position de pacman dans le plateau
 
-Point Pos_to_Point(Partie p, Pos pos); // Convertit pos du plateau en point graphique(pixels)
+Point Pos_to_Point(Pos pos); // Convertit pos du plateau en point graphique(pixels)
 
 #endif
