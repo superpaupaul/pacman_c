@@ -10,6 +10,7 @@
 #define SIZEX 25 // longueur d'une case en pixels
 #define SIZEY 25 // hauteur d'une case
 #define TAILLETEXTE 20 // taille de la police du texte affiché sur le menu
+#define TAILLENOM 10 // taille du nombre de caractères maximum pour le nom du joueur
 #define NBFANTOMES 4 // nombres de fantômes dans les plateaux chargés
 #define MUR '*'
 #define POINT '.'
@@ -58,5 +59,7 @@ Pos Get_Pacman_Pos(Partie p); // renvoie la position de pacman dans le plateau
 
 Point Pos_to_Point(Pos pos); // Convertit pos du plateau en point graphique(pixels)
 
-void Start_Menu(Partie p);
+void Start_Menu(Partie p); // dessine le menu et gère les choix du joueur, avec les flèches et le bouton entrée
+
+void write_score(int score); // demande le nom du joueur sur le bash et écrit son nom + son score dans le fichier score
 #endif

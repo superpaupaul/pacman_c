@@ -505,5 +505,35 @@ void Start_Menu(Partie p)
 		oldselect = select;
 		actualiser();
 	}
+
+	if (choice == 1)
+		lancer_partie(p);
 	
+	else if(choice == 2)
+	{
+		/* fonction voir scores */
+	}
+	else if(choice == 3)
+		fin_graphique();
+}
+
+void write_score(int score)
+{
+	FILE *scores;
+	char filePath[] = "data/scores";
+	char nomJoueur[TAILLENOM];
+	scores = fopen(filePath,"a"); // ouverture du fichier scores en mode append pour ajouter
+
+	if (scores == NULL)	// fopen renvoie NULL si il n'arrive pas à trouver le fichier
+	{
+		printf("Impossible d'ouvrir %s\n",filePath);
+	}
+	else
+	{
+		printf("Entrez votre nom :\n");
+		scanf("%s",nomJoueur);
+		fprintf(scores,strcat("\n",nomJoueur));
+		fclose(scores);
+		free(scores);
+	}
 }

@@ -43,7 +43,7 @@ int main(int argc, char **argv)
 /******************************************************************************/
 /* A PARTIR D'ICI...C'EST A VOUS DE JOUER!                                    */
 /******************************************************************************/
-    p.LONGUEUR = p.C * SIZEX;
+    /*p.LONGUEUR = p.C * SIZEX;
     p.HAUTEUR = p.L * SIZEY;
 
     // DEBUT SESSION GRAPHIQUE
@@ -54,7 +54,8 @@ int main(int argc, char **argv)
 	lancer_partie(p);
 	// FIN SESSION GRAPHIQUE
 	fin_graphique();
-
+	*/
+    write_score(10);
     return 0;
     }
 
