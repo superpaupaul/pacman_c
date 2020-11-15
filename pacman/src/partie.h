@@ -9,6 +9,7 @@
 
 #define SIZEX 25 // longueur d'une case en pixels
 #define SIZEY 25 // hauteur d'une case
+#define TAILLETEXTE 20 // taille de la police du texte affiché sur le menu
 #define NBFANTOMES 4 // nombres de fantômes dans les plateaux chargés
 #define MUR '*'
 #define POINT '.'
@@ -57,4 +58,5 @@ Pos Get_Pacman_Pos(Partie p); // renvoie la position de pacman dans le plateau
 
 Point Pos_to_Point(Pos pos); // Convertit pos du plateau en point graphique(pixels)
 
+void Start_Menu(Partie p);
 #endif

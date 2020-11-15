@@ -435,3 +435,75 @@ Point Pos_to_Point(Pos pos)
 		Point res = {pos.c*SIZEX,pos.l*SIZEY};
 		return res;
 	}
+void Start_Menu(Partie p)
+{
+	int choice = 1; // le choix du joueur: 1 -> jouer, 2 -> scores, 3 -> Quitter
+	int oldchoice = choice;
+	int touche = 0;
+	int couleur_texte = noir;
+	char * jouer = "jouer";
+	char * highscore = "scores";
+	char * quitter = "quitter";
+	int longueur = p.C * SIZEX;
+	int hauteur = p.L * SIZEY;
+	Point hd = {0,0};
+	Point pjouer = {longueur/2 - longueur/10,hauteur/4};
+	Point phighscore = {pjouer.x,pjouer.y+hauteur/6};
+	Point pquitter = {pjouer.x,phighscore.y+hauteur/6};
+	Point select = {pjouer.x - 10, pjouer.y}; 
+	Point oldselect = select;
+	// AFFICHAGE DU MENU
+	dessiner_rectangle(hd,longueur,hauteur,blanc); // dessin de l'arrière-plan
+	dessiner_rectangle(select,5,1.5*TAILLETEXTE,bleu); // dessin du rectangle de selection
+	afficher_texte(jouer,TAILLETEXTE,pjouer,couleur_texte); // dessin des trois options
+	afficher_texte(highscore,TAILLETEXTE,phighscore,couleur_texte);
+	afficher_texte(quitter,TAILLETEXTE,pquitter,couleur_texte);
+	actualiser();
+	// AU TOUR DU JOUEUR DE FAIRE SON CHOIX
+	while(touche != SDLK_RETURN)
+	{
+		attente(120);
+		touche = attendre_touche();
+		switch(touche)
+		{
+			case SDLK_DOWN:
+				if(choice == 1)
+				{
+					choice = 2;
+					select.y += hauteur/6;
+				}
+				else if(choice == 2)
+				{
+					choice = 3;
+					select.y += hauteur/6;
+				}
+				break;
+			case SDLK_UP:
+				if(choice == 2)
+				{
+					choice = 1;
+					select.y -= hauteur/6;
+				}
+				else if(choice == 3)
+				{
+					choice = 2;
+					select.y -= hauteur/6;
+				}
+				break;
+			case SDLK_ESCAPE:
+				fin_graphique();
+				break;
+			default:
+				break;
+		}
+		if (oldchoice != choice) // On efface l'ancienrectangle de selection si l'utilisateur se déplace dans le menu
+		{
+			dessiner_rectangle(select,5,1.5*TAILLETEXTE,bleu);
+			dessiner_rectangle(oldselect,5,1.5*TAILLETEXTE,blanc);
+		}
+		oldchoice = choice;
+		oldselect = select;
+		actualiser();
+	}
+	
+}
