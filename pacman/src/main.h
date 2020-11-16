@@ -10,5 +10,10 @@
 
 #define DEBUG 1
 
+#define CASE_MUR '*'
+#define CASE_PACMAN 'P'
+#define CASE_BONUS 'B'
+#define CASE_FANTOM 'F'
+
 
 #endif
