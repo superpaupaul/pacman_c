@@ -64,3 +64,20 @@ void Start_Menu(Partie p); // dessine le menu et gère les choix du joueur, avec
 
 void write_score(int score); // demande le nom du joueur sur le bash et écrit son nom + son score dans le fichier score
 #endif
+
+Partie deplacement_fantomes(Partie p);
+
+int check_fantome(int c,int l);
+
+void effacement_fantomes(Partie p,int i);
+
+void nouveau_fantomes(Partie p,int i);
+
+int check_case_droite_fantomes(Partie p,int i);
+
+int check_case_gauche_fantomes(Partie p,int i);
+
+int check_case_haut_fantomes(Partie p,int i);
+
+int check_case_bas_fantomes(Partie p,int i);
+
