@@ -11,6 +11,7 @@
 #define SIZEY 25 // hauteur d'une case
 #define TAILLETEXTE 20 // taille de la police du texte affiché sur le menu
 #define TAILLENOM 10 // taille du nombre de caractères maximum pour le nom du joueur
+#define TAILLESCORE 20+TAILLENOM // Taille du score maximal atteignable + TAILLE du Nom du joueur carles deux sont sur une même ligne
 #define NBFANTOMES 4 // nombres de fantômes dans les plateaux chargés
 #define MUR '*'
 #define POINT '.'

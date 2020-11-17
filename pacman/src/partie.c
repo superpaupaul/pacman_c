@@ -522,6 +522,7 @@ void write_score(int score)
 	FILE *scores;
 	char filePath[] = "data/scores";
 	char nomJoueur[TAILLENOM];
+	char buf[TAILLESCORE];
 	scores = fopen(filePath,"a"); // ouverture du fichier scores en mode append pour ajouter
 
 	if (scores == NULL)	// fopen renvoie NULL si il n'arrive pas à trouver le fichier
@@ -532,8 +533,8 @@ void write_score(int score)
 	{
 		printf("Entrez votre nom :\n");
 		scanf("%s",nomJoueur);
-		fprintf(scores,strcat("\n",nomJoueur));
+		sprintf(buf, "%s %d\n",nomJoueur,score);
+		fprintf(scores,buf);
 		fclose(scores);
-		free(scores);
 	}
 }
