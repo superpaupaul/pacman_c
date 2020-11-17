@@ -1,16 +1,1 @@
 Nothing much to see here huh?
-/*****************************************************************/
-/**			Difficultés				**/
-/*****************************************************************/
-
-Git:
-Nous avons utilisé git pour pouvoir collaborer sur le projet, pour se simplifier la tâche, nous avons créé deux branches sur lesquelles nous pouviens travailler pour ensuite envoyer ce qui marchait bien sur la branche master.
-Cependant, git est assez complee à utiliser: aucune interface graphique pour comprendre où est quoi, nous avons donc fait face à divers problèmes de compatibilité quand l'un envoyait son travaille après l'autre sur la branche master
-
-
-/*****************************************************************/
-/**                     Joies	                                **/
-/*****************************************************************/
-
-La libgraphique:
-Super pratique à utiliser
