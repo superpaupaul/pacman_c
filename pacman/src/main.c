@@ -49,7 +49,6 @@ int main(int argc, char **argv)
     // DEBUT SESSION GRAPHIQUE
 	debut_graphique(p);
     Start_Menu(p);
-	affiche_plan(p);
 	actualiser();
 	lancer_partie(p);
 	// FIN SESSION GRAPHIQUE

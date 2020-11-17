@@ -193,6 +193,8 @@ void lancer_partie(Partie p)
 	{
 		while(1)
 		{
+			affiche_plan(p);
+			actualiser();
 			int touche = attendre_touche();
 			p = deplacement_joueur(p, touche);
 			actualiser();
