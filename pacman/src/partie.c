@@ -193,8 +193,13 @@ void lancer_partie(Partie p)
 	{
 		affiche_plan(p);
 		actualiser();
-		while(1)
+		p.isdead = 0;
+		while(p.isdead == 0)
 		{
+			if(Get_gum_number == 0)
+			{
+				//l'envoyer sur le 2eme niveau
+			}
 			int touche = attendre_touche();
 			p = deplacement_joueur(p, touche);
 			p = deplacement_fantomes(p);
@@ -203,6 +208,9 @@ void lancer_partie(Partie p)
 			
 
 		}
+		// il est mort
+		printf("T'es mort\n");
+		Start_Menu(p);
 	}
 
 Partie deplacement_fantomes(Partie p)
@@ -844,4 +852,20 @@ void write_score(int score)
 		fprintf(scores,buf);
 		fclose(scores);
 	}
+}
+
+int Get_gum_number(Partie p)
+{
+	res = 0;
+	for(int i = 0; i < p.L; i++)
+	{
+		for(int j = 0; j < p.C; j++)
+		{
+			if (p.plateau[i][j] == POINT)
+			{
+				res++;
+			}
+		}
+	}
+	return res;
 }
