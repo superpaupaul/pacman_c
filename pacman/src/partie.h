@@ -69,6 +69,10 @@ Partie deplacement_fantomes(Partie p);
 
 int check_fantome(int c,int l);
 
+int check_case_fantome(Partie p,int i,char a);
+
+void check_case_libre(Partie p,int i);
+
 void effacement_fantomes(Partie p,int i);
 
 void nouveau_fantomes(Partie p,int i);

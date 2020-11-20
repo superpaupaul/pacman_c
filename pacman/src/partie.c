@@ -211,7 +211,6 @@ Partie deplacement_fantomes(Partie p)
 		{
 			int delta_x = p.pacman.c-p.fantomes[i].c;//différence de position x entre pacman et le fantome
 			int delta_y = p.pacman.l-p.fantomes[i].l;//différence de position y entre pacman et le fantome
-			printf("Initialisation:ok pour %d\np.fantomes[i].c=%d\np.fantomes[i].l=%d\nplateau=%c\n",i,p.fantomes[i].c,p.fantomes[i].l,p.plateau[p.fantomes[i].c][p.fantomes[i].l]);
 			
 				
 			switch(abs(delta_x)>abs(delta_y))//on commence avec le cas où l'abcisse serait plus grande que l'ordonnée
@@ -219,36 +218,35 @@ Partie deplacement_fantomes(Partie p)
 					case 1:
 						if(delta_x>0)//ensuite on prend le cas où c>0
 						{
-							printf("%d à dx>0\n",i);
-							switch(check_case_droite_fantomes(p,i))//on check la disponibilité de la case adjacente
+							switch(check_case_fantome(p,i,'d'))//on check la disponibilité de la case adjacente
 							{
 								case 1:
-									printf("%d va a droite\n",i);
 									effacement_fantomes(p,i);//effacement de l'ancien fantome
 									p.fantomes[i].c+=1;//changement de la position du fantome 
 									nouveau_fantomes(p,i);//création du nouveau fantome à la position donné
 									break;
 								case 0:
-									if(delta_y>=0 &&check_case_bas_fantomes(p,i)==1)
+									if(delta_y>=0 &&check_case_fantome(p,i,'b')==1)
 									{
-										printf("case droite non dispo, %d va en bas\n",i);
 										effacement_fantomes(p,i);
 										p.fantomes[i].l+=1;
 										nouveau_fantomes(p,i);
 									}
-									else if(check_case_haut_fantomes(p,i)==1)
+									else if(check_case_fantome(p,i,'h')==1)
 									{
-										printf("case droite non dispo, %d va en haut\n",i);
 										effacement_fantomes(p,i);
 										p.fantomes[i].l-=1;
 										nouveau_fantomes(p,i);
 									}
-									else
+									else if(check_case_fantome(p,i,'g')==1)
 									{
-										printf("case droite non dispo, %d va à gauche\n",i);
 										effacement_fantomes(p,i);
 										p.fantomes[i].c-=1;
 										nouveau_fantomes(p,i);
+									}
+									else
+									{
+										check_case_libre(p,i);
 									}
 									break;
 
@@ -257,35 +255,35 @@ Partie deplacement_fantomes(Partie p)
 						else
 						{
 							printf("%d à dx<0\n",i);
-							switch(check_case_gauche_fantomes(p,i))
+							switch(check_case_fantome(p,i,'g'))
 							{
 								case 1:
-									printf("%d va a gauche\n",i);
 									effacement_fantomes(p,i);
 									p.fantomes[i].c-=1;
 									nouveau_fantomes(p,i);
 									break;
 								case 0:
-									if(delta_y>=0 &&check_case_bas_fantomes(p,i)==1)
-									{
-										printf("case gauche non dispo, %d va en bas\n",i);
+									if(delta_y>=0 &&check_case_fantome(p,i,'b')==1)
+									{;
 										effacement_fantomes(p,i);
 										p.fantomes[i].l+=1;
 										nouveau_fantomes(p,i);
 									}
-									else if(check_case_haut_fantomes(p,i)==1)
+									else if(check_case_fantome(p,i,'h')==1)
 									{
-										printf("case gauche non dispo, %d va en haut\n",i);
 										effacement_fantomes(p,i);
 										p.fantomes[i].l-=1;
 										nouveau_fantomes(p,i);
 									}
+									else if(check_case_fantome(p,i,'d')==1)
+									{
+										effacement_fantomes(p,i);
+										p.fantomes[i].c+=1;
+										nouveau_fantomes(p,i);
+									}
 									else
 									{
-										printf("case gauche non dispo, %d va à droite\n",i);
-										effacement_fantomes(p,i);
-										p.fantomes[i].c-=1;
-										nouveau_fantomes(p,i);
+										check_case_libre(p,i);
 									}
 									break;
 
@@ -295,36 +293,35 @@ Partie deplacement_fantomes(Partie p)
 					case 0:
 						if(delta_y>0)
 						{
-							printf("%d à dy>0\n",i);
-							switch(check_case_bas_fantomes(p,i))
+							switch(check_case_fantome(p,i,'b'))
 							{
 								case 1:
-									printf("%d va en bas\n",i);
 									effacement_fantomes(p,i);
 									p.fantomes[i].l+=1;
 									nouveau_fantomes(p,i);
 									break;
 								case 0:
-									if(delta_x>=0 &&check_case_droite_fantomes(p,i)==1)
+									if(delta_x>=0 &&check_case_fantome(p,i,'d')==1)
 									{
-										printf("case bas non dispo , %d va à droite, delta_y=%d\nPos pacman.y=%d\nPos fantome.y=%d\n",i,delta_y,p.pacman.l,p.fantomes[i].l);
 										effacement_fantomes(p,i);
 										p.fantomes[i].c+=1;
 										nouveau_fantomes(p,i);
 									}
-									else if(check_case_gauche_fantomes(p,i)==1)
+									else if(check_case_fantome(p,i,'g')==1)
 									{
-										printf("case bas non dispo, %d va à gauche\n",i);
 										effacement_fantomes(p,i);
 										p.fantomes[i].c-=1;
 										nouveau_fantomes(p,i);
 									}
-									else
+									else if(check_case_fantome(p,i,'h')==1)
 									{
-										printf("case bas non dispo, %d va en haut\n",i);
 										effacement_fantomes(p,i);
 										p.fantomes[i].l-=1;
 										nouveau_fantomes(p,i);
+									}
+									else
+									{
+										check_case_libre(p,i);
 									}
 									break;
 
@@ -333,36 +330,35 @@ Partie deplacement_fantomes(Partie p)
 						}
 						else
 						{
-							printf("%d à dy<=0\n",i);
-							switch(check_case_haut_fantomes(p,i))
+							switch(check_case_fantome(p,i,'h'))
 							{
 								case 1:
-								printf("%d va en haut",i);
 									effacement_fantomes(p,i);
 									p.fantomes[i].l-=1;
 									nouveau_fantomes(p,i);
 									break;
 								case 0:
-									if(delta_x>=0 &&check_case_droite_fantomes(p,i)==1)
+									if(delta_x>=0 &&check_case_fantome(p,i,'d')==1)
 									{
-										printf("case haut non dispo, %d va à droite\n",i);
 										effacement_fantomes(p,i);
 										p.fantomes[i].c+=1;
 										nouveau_fantomes(p,i);
 									}
-									else if(check_case_gauche_fantomes(p,i)==1)
+									else if(check_case_fantome(p,i,'g')==1)
 									{
-										printf("case haut non dispo, %d va à gauche\n",i);
 										effacement_fantomes(p,i);
 										p.fantomes[i].c-=1;
 										nouveau_fantomes(p,i);
 									}
-									else
+									else if(check_case_fantome(p,i,'b')==1)
 									{
-										printf("case haut non dispo, %d va en bas\non",i);
 										effacement_fantomes(p,i);
 										p.fantomes[i].l+=1;
 										nouveau_fantomes(p,i);
+									}
+									else
+									{
+										check_case_libre(p,i);
 									}
 									break;
 							}
@@ -372,6 +368,41 @@ Partie deplacement_fantomes(Partie p)
 	return p;
 		
 	}
+
+void check_case_libre(Partie p,int i)
+	{
+		if (check_case_fantome(p,i,'h')==1)
+		{
+			effacement_fantomes(p,i);
+			p.fantomes[i].l-=1;
+			nouveau_fantomes(p,i);				
+		}
+		else if(check_case_fantome(p,i,'d')==1)
+		{
+			effacement_fantomes(p,i);
+			p.fantomes[i].c+=1;
+			nouveau_fantomes(p,i);
+		}
+		else if(check_case_fantome(p,i,'g')==1)
+		{
+			effacement_fantomes(p,i);
+			p.fantomes[i].c-=1;
+			nouveau_fantomes(p,i);
+		}
+		else if(check_case_fantome(p,i,'b')==1)
+		{
+			effacement_fantomes(p,i);
+			p.fantomes[i].l+=1;
+			nouveau_fantomes(p,i);
+		}
+		else
+		{
+			printf("Fantome %d ne bouge pas\n",i);
+			effacement_fantomes(p,i);
+			nouveau_fantomes(p,i);
+		}
+	}
+
 void effacement_fantomes(Partie p,int i)//fonction chargé d'effacé le sprite de l'ancien fantome
 	{
 		char position_ancien_fantome=p.plateau[p.fantomes[i].l][p.fantomes[i].c];
@@ -380,7 +411,6 @@ void effacement_fantomes(Partie p,int i)//fonction chargé d'effacé le sprite d
 				p.plateau[p.fantomes[i].l][p.fantomes[i].c]=VIDE;
 			}
 		dessiner_sprite(p,p.fantomes[i]);
-		printf("Ancien fantome en: c=%d et l=%d\n",p.fantomes[i].c,p.fantomes[i].l);
 	}
 void nouveau_fantomes(Partie p,int i)
 	{
@@ -388,82 +418,91 @@ void nouveau_fantomes(Partie p,int i)
 		int x=p.fantomes[i].c*SIZEX;
 		int y=p.fantomes[i].l*SIZEY;
 		Point position={x,y};
-		printf("Nouveau fantome en: c=%d et l=%d\nSur plateau:p.plateau[p.fantomes[i].c][p.fantomes[i].l]=%c\n\n\n",p.fantomes[i].c,p.fantomes[i].l,p.plateau[p.fantomes[i].c][p.fantomes[i].l-1]);
-		dessiner_rectangle(position,SIZEX,SIZEY,rouge);
+		if(i==0)
+		{
+			afficher_image("BMP/fantome_bleu.bmp",position);
+		}
+		else if(i==1)
+		{
+			afficher_image("BMP/fantome_rose.bmp",position);
+		}
+		else if(i==2)
+		{
+			afficher_image("BMP/fantome_vert.bmp",position);
+		}
+		else
+		{
+			afficher_image("BMP/fantome_jaune.bmp",position);
+		}
 		actualiser();	
 	}
 
 int check_fantome(int c,int l)//check si la case est un fantome
 	{
-		int x=(c*SIZEX)+SIZEX/2;
-		int y=(l*SIZEY)+SIZEY/2; 
+		int x=(c*SIZEX);
+		int y=(l*SIZEY); 
 		Point point_fantome={x,y};
-		if(couleur_point(point_fantome)==rouge)
+		if(couleur_point(point_fantome)==65536)
 		{
+			printf("FANTOMMMMMMMEEEE couleur du point=%d\n",couleur_point(point_fantome));
 			return 1;
 		}
 		else
 		{
+			printf("couleur du point=%d\n",couleur_point(point_fantome));
 			return 0;
 		}
 	}
-int check_case_droite_fantomes(Partie p,int i)
+int check_case_fantome(Partie p,int i,char a)
 	{
-		char position_nouveau_fantome=p.plateau[p.fantomes[i].l][p.fantomes[i].c+1];
-		if(position_nouveau_fantome==MUR||check_fantome(p.fantomes[i].c+1,p.fantomes[i].l))
-		{
-			printf("check droit fait, reponse 0\n,p.plateau[p.fantomes[i].c+1][p.fantomes[i].l]=%c\n",p.plateau[p.fantomes[i].c+1][p.fantomes[i].l]);
-			printf("Car position_nouveau_fantome==MUR=%d\n ",position_nouveau_fantome==MUR);
-			return 0;
-		}
-		else
-		{
-			printf("check droit fait, reponse 1\n");
-			printf("Car position_nouveau_fantome==MUR=%d\np.plateau[p.fantomes[i].c+1][p.fantomes[i].l]=%c e==MUR=%c ",position_nouveau_fantome==MUR,p.plateau[p.fantomes[i].c+1][p.fantomes[i].l]==MUR);
-			printf("p.fantomes[i].c+1=%d,p.fantomes[i].l=%d",p.fantomes[i].c+1,p.fantomes[i].l);
-			return 1;
-		}
-	}
-int check_case_gauche_fantomes(Partie p,int i)
-	{
-		char position_nouveau_fantome=p.plateau[p.fantomes[i].l][p.fantomes[i].c-1];
-		if(position_nouveau_fantome==MUR||check_fantome(p.fantomes[i].c-1,p.fantomes[i].l))
-		{
-			printf("check gauche fait, reponse 0\n,p.plateau[p.fantomes[i].c-1][p.fantomes[i].l]=%c\n",p.plateau[p.fantomes[i].c-1][p.fantomes[i].l]);
-			return 0;
-		}
-		else
-		{
-			printf("check gauche fait, reponse 1\n");
-			return 1;
-		}
-	}
-int check_case_haut_fantomes(Partie p,int i)
-	{
-		char position_nouveau_fantome=p.plateau[p.fantomes[i].l-1][p.fantomes[i].c];
-		if(position_nouveau_fantome==MUR||check_fantome(p.fantomes[i].c,p.fantomes[i].l-1))
-		{
-			printf("check haut fait, reponse 0\n p.plateau[p.fantomes[i].c][p.fantomes[i].l-1]=%c\n",p.plateau[p.fantomes[i].c][p.fantomes[i].l-1]);
-			return 0;
-		}
-		else
-		{
-			printf("check haut fait, reponse 1\n");
-			return 1;
-		}
-	}
-int check_case_bas_fantomes(Partie p,int i)
-	{
-		char position_nouveau_fantome=p.plateau[p.fantomes[i].l+1][p.fantomes[i].c];
-		if(position_nouveau_fantome==MUR||check_fantome(p.fantomes[i].c,p.fantomes[i].l+1))
-		{
-			printf("check bas fait, reponse 0\np.plateau[p.fantomes[i].c][p.fantomes[i].l+1]=%c\n",p.plateau[p.fantomes[i].c][p.fantomes[i].l+1]);
-			return 0;
-		}
-		else
-		{
-			printf("check bas fait, reponse 1\n");
-			return 1;
+		switch(a){
+			case 'd': ;
+				char position_nouveau_fantome_droit=p.plateau[p.fantomes[i].l][p.fantomes[i].c+1];
+				if(position_nouveau_fantome_droit==MUR||check_fantome(p.fantomes[i].c+1,p.fantomes[i].l))
+				{
+					return 0;
+				}
+				else
+				{
+					return 1;
+				}
+				break;
+			case 'g': ;
+				char position_nouveau_fantome_gauche=p.plateau[p.fantomes[i].l][p.fantomes[i].c-1];
+				if(position_nouveau_fantome_gauche==MUR||check_fantome(p.fantomes[i].c-1,p.fantomes[i].l))
+				{
+					return 0;
+				}
+				else
+				{
+					return 1;
+				}
+				break;
+			case 'h': ;
+				char position_nouveau_fantome_haut=p.plateau[p.fantomes[i].l-1][p.fantomes[i].c];
+				if(position_nouveau_fantome_haut==MUR||check_fantome(p.fantomes[i].c,p.fantomes[i].l-1))
+				{
+					return 0;
+				}
+				else
+				{
+					return 1;
+				}
+				break;
+			case 'b': ;
+				char position_nouveau_fantome_bas=p.plateau[p.fantomes[i].l+1][p.fantomes[i].c];
+				if(position_nouveau_fantome_bas==MUR||check_fantome(p.fantomes[i].c,p.fantomes[i].l+1))
+				{
+					return 0;
+				}
+				else
+				{
+					return 1;
+				}
+				break;
+			default:
+				return 0;
+				break;
 		}
 	}
 	
@@ -648,19 +687,20 @@ void dessiner_sprite(Partie p, Pos pos)
 		switch (c)
 			{
 				case VIDE:
-					dessiner_rectangle(point,SIZEX,SIZEY,blanc);
+					dessiner_rectangle(point,SIZEX,SIZEY,noir);
 					break;
 				case POINT:
-					dessiner_rectangle(point,SIZEX,SIZEY,blanc);
+					dessiner_rectangle(point,SIZEX,SIZEY,noir);
 					centre.x = point.x + SIZEX/2;
 					centre.y = point.y + SIZEY/2;
 					dessiner_disque(centre,(int)SIZEX/4,jaune);
 					break;
 				case MUR:
-					dessiner_rectangle(point,SIZEX,SIZEY,noir);
+					//dessiner_rectangle(point,SIZEX,SIZEY,vert);
+					afficher_image("BMP/MUR.bmp",point);
 					break;
 				case BONUS:
-					dessiner_rectangle(point,SIZEX,SIZEY,blanc);
+					dessiner_rectangle(point,SIZEX,SIZEY,noir);
 					centre.x = point.x + SIZEX/2;
 					centre.y = point.y + SIZEY/2;
 					dessiner_disque(centre,(int)SIZEX/2,jaune);
