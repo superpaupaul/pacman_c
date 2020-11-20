@@ -196,9 +196,23 @@ void lancer_partie(Partie p)
 		p.isdead = 0;
 		while(p.isdead == 0)
 		{
-			if(Get_gum_number(p) == 0)
+			if(Get_gum_number(p) == 0) // il faut l'envoyer sur l'autre niveau
 			{
-				//l'envoyer sur le 2eme niveau
+				level++;
+				switch(p.level)
+				{
+					case 2:
+						charge_plan("pathtoleveltwo");
+						lancer_partie(p);
+						break;
+					case 3:
+						// machin
+					default:
+						printf("Vous avez terminé le jeu");
+						attendre_clic();
+						Start_Menu(p);
+						break;
+				}
 			}
 			int touche = attendre_touche();
 			p = deplacement_joueur(p, touche);

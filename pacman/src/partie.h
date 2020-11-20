@@ -38,6 +38,7 @@ typedef struct partie {
     int     LONGUEUR; // longueur fenêtre graphique
     int     HAUTEUR; // hauteur fenêtre graphique
     int		isdead; // 1 si pacman est mort, 0 sinon
+    int     level // à quel niveau se situe-ton?
     } Partie;
 
 typedef struct score { // permet de faire des tableaux de scores
