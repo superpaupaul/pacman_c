@@ -40,6 +40,11 @@ typedef struct partie {
     int		isdead; // 1 si pacman est mort, 0 sinon
     } Partie;
 
+typedef struct score { // permet de faire des tableaux de scores
+    char nom[TAILLENOM]; //
+    int score; 
+} Score;
+
 // PROTOTYPES
 /* charge_plan : lit un fichier contenant un plateau de jeu et le charge
                     en mémoire, dans le champ 'plateau' d'une Partie */
@@ -87,3 +92,9 @@ int check_case_haut_fantomes(Partie p,int i);
 int check_case_bas_fantomes(Partie p,int i);
 
 int Get_gum_number(Partie p); // obtient le nombre de gum restants
+
+void view_scores(Partie p); // montre les 10 meilleurs scores
+
+void swap(Score *xp, Score *yp); // fonction auxiliaire au bubbleSort
+
+void bubbleSort(Score arr[], int n); // algorithme de tri pour un tableau de score de longueur n

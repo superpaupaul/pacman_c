@@ -196,7 +196,7 @@ void lancer_partie(Partie p)
 		p.isdead = 0;
 		while(p.isdead == 0)
 		{
-			if(Get_gum_number == 0)
+			if(Get_gum_number(p) == 0)
 			{
 				//l'envoyer sur le 2eme niveau
 			}
@@ -826,10 +826,13 @@ void Start_Menu(Partie p)
 	
 	else if(choice == 2)
 	{
-		/* fonction voir scores */
+		view_scores(p);
 	}
 	else if(choice == 3)
-		fin_graphique();
+	{
+		fermer_fenetre();
+		exit(0);
+	}
 }
 
 void write_score(int score)
@@ -856,7 +859,7 @@ void write_score(int score)
 
 int Get_gum_number(Partie p)
 {
-	res = 0;
+	int res = 0;
 	for(int i = 0; i < p.L; i++)
 	{
 		for(int j = 0; j < p.C; j++)
@@ -869,3 +872,73 @@ int Get_gum_number(Partie p)
 	}
 	return res;
 }
+void view_scores(Partie p)
+{
+	printf("viewing scores:\n");
+	int longueur = p.C * SIZEX;
+	int hauteur = p.L * SIZEY;
+	FILE *file;
+	int i = 0;
+	int score;
+	char nomJoueur[TAILLENOM];
+	Score scoretab[500]; // OMG pas plus de 500 scores !! Bug du 500ième niveau?????
+	char filePath[] = "data/scores";
+	file = fopen(filePath,"r");
+
+	while(fscanf(file,"%s%d",nomJoueur,&score) != EOF) // lecture du fichier scores, enregistrement de la lecture dans le tableau de Score scoretab
+	{
+		strcpy(scoretab[i].nom,nomJoueur);
+		scoretab[i].score = score;
+		i++;
+	}
+	fclose(file);
+
+	bubbleSort(scoretab,i);
+
+	if(i > 10)
+	{
+		i = 10;	// i est le nombre de scores que la fonction va afficher, on ne veut pas en afficher plus de 10
+	}
+
+
+	Point hg = {0,0};
+	Point texte = {longueur/3,10};
+	dessiner_rectangle(hg,longueur,hauteur,blanc);	// affichage de l'arrière-plan
+
+	for(int j = i - 1; j >= 0; j--)	// conversion des Score en str et affichage graphique
+	{
+		char str[TAILLENOM+TAILLESCORE];
+		sprintf(str, "%s %d", scoretab[j].nom,scoretab[j].score);
+		printf("%s\n",str);
+		afficher_texte(str,TAILLETEXTE,texte,rouge);
+		texte.y += 30;
+	}
+	afficher_texte("Press q to quit",TAILLETEXTE,texte,bleu);
+	actualiser();
+
+	// Attente de la sortie et retour au menu
+	int touche = attendre_touche();
+	while(touche != SDLK_q)
+	{
+		touche = attendre_touche();
+	}
+	Start_Menu(p);
+}
+void swap(Score *xp, Score *yp) 
+{ 
+    Score temp = *xp; 
+    *xp = *yp; 
+    *yp = temp; 
+} 
+  
+// A function to implement bubble sort 
+void bubbleSort(Score arr[], int n) 
+{ 
+   int i, j; 
+   for (i = 0; i < n-1; i++)       
+  
+       // Last i elements are already in place    
+       for (j = 0; j < n-i-1; j++)  
+           if (arr[j].score > arr[j+1].score) 
+              swap(&arr[j], &arr[j+1]); 
+} 
