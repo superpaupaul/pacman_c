@@ -198,7 +198,7 @@ void lancer_partie(Partie p)
 		{
 			if(Get_gum_number(p) == 0) // il faut l'envoyer sur l'autre niveau
 			{
-				level++;
+				p.level++;
 				switch(p.level)
 				{
 					case 2:
