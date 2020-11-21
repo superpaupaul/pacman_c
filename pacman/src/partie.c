@@ -191,12 +191,344 @@ void fin_graphique()
 
 void lancer_partie(Partie p)
 	{
-		while(1)
+		affiche_plan(p);
+		actualiser();
+		p.isdead = 0;
+		while(p.isdead == 0)
 		{
+			if(Get_gum_number(p) == 0) // il faut l'envoyer sur l'autre niveau
+			{
+				p.level++;
+				switch(p.level)
+				{
+					case 2:
+						charge_plan("pathtoleveltwo");
+						lancer_partie(p);
+						break;
+					case 3:
+						// machin
+					default:
+						printf("Vous avez terminé le jeu");
+						attendre_clic();
+						Start_Menu(p);
+						break;
+				}
+			}
 			int touche = attendre_touche();
 			p = deplacement_joueur(p, touche);
+			p = deplacement_fantomes(p);
 			actualiser();
-			attente(100);
+			attente(200);
+			
+
+		}
+		// il est mort
+		printf("T'es mort\n");
+		Start_Menu(p);
+	}
+
+Partie deplacement_fantomes(Partie p)
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			int delta_x = p.pacman.c-p.fantomes[i].c;//différence de position x entre pacman et le fantome
+			int delta_y = p.pacman.l-p.fantomes[i].l;//différence de position y entre pacman et le fantome
+			
+				
+			switch(abs(delta_x)>abs(delta_y))//on commence avec le cas où l'abcisse serait plus grande que l'ordonnée
+				{
+					case 1:
+						if(delta_x>0)//ensuite on prend le cas où c>0
+						{
+							switch(check_case_fantome(p,i,'d'))//on check la disponibilité de la case adjacente
+							{
+								case 1:
+									effacement_fantomes(p,i);//effacement de l'ancien fantome
+									p.fantomes[i].c+=1;//changement de la position du fantome 
+									nouveau_fantomes(p,i);//création du nouveau fantome à la position donné
+									break;
+								case 0:
+									if(delta_y>=0 &&check_case_fantome(p,i,'b')==1)
+									{
+										effacement_fantomes(p,i);
+										p.fantomes[i].l+=1;
+										nouveau_fantomes(p,i);
+									}
+									else if(check_case_fantome(p,i,'h')==1)
+									{
+										effacement_fantomes(p,i);
+										p.fantomes[i].l-=1;
+										nouveau_fantomes(p,i);
+									}
+									else if(check_case_fantome(p,i,'g')==1)
+									{
+										effacement_fantomes(p,i);
+										p.fantomes[i].c-=1;
+										nouveau_fantomes(p,i);
+									}
+									else
+									{
+										check_case_libre(p,i);
+									}
+									break;
+
+							}
+						}
+						else
+						{
+							printf("%d à dx<0\n",i);
+							switch(check_case_fantome(p,i,'g'))
+							{
+								case 1:
+									effacement_fantomes(p,i);
+									p.fantomes[i].c-=1;
+									nouveau_fantomes(p,i);
+									break;
+								case 0:
+									if(delta_y>=0 &&check_case_fantome(p,i,'b')==1)
+									{;
+										effacement_fantomes(p,i);
+										p.fantomes[i].l+=1;
+										nouveau_fantomes(p,i);
+									}
+									else if(check_case_fantome(p,i,'h')==1)
+									{
+										effacement_fantomes(p,i);
+										p.fantomes[i].l-=1;
+										nouveau_fantomes(p,i);
+									}
+									else if(check_case_fantome(p,i,'d')==1)
+									{
+										effacement_fantomes(p,i);
+										p.fantomes[i].c+=1;
+										nouveau_fantomes(p,i);
+									}
+									else
+									{
+										check_case_libre(p,i);
+									}
+									break;
+
+							}
+						}
+						break;
+					case 0:
+						if(delta_y>0)
+						{
+							switch(check_case_fantome(p,i,'b'))
+							{
+								case 1:
+									effacement_fantomes(p,i);
+									p.fantomes[i].l+=1;
+									nouveau_fantomes(p,i);
+									break;
+								case 0:
+									if(delta_x>=0 &&check_case_fantome(p,i,'d')==1)
+									{
+										effacement_fantomes(p,i);
+										p.fantomes[i].c+=1;
+										nouveau_fantomes(p,i);
+									}
+									else if(check_case_fantome(p,i,'g')==1)
+									{
+										effacement_fantomes(p,i);
+										p.fantomes[i].c-=1;
+										nouveau_fantomes(p,i);
+									}
+									else if(check_case_fantome(p,i,'h')==1)
+									{
+										effacement_fantomes(p,i);
+										p.fantomes[i].l-=1;
+										nouveau_fantomes(p,i);
+									}
+									else
+									{
+										check_case_libre(p,i);
+									}
+									break;
+
+
+							}
+						}
+						else
+						{
+							switch(check_case_fantome(p,i,'h'))
+							{
+								case 1:
+									effacement_fantomes(p,i);
+									p.fantomes[i].l-=1;
+									nouveau_fantomes(p,i);
+									break;
+								case 0:
+									if(delta_x>=0 &&check_case_fantome(p,i,'d')==1)
+									{
+										effacement_fantomes(p,i);
+										p.fantomes[i].c+=1;
+										nouveau_fantomes(p,i);
+									}
+									else if(check_case_fantome(p,i,'g')==1)
+									{
+										effacement_fantomes(p,i);
+										p.fantomes[i].c-=1;
+										nouveau_fantomes(p,i);
+									}
+									else if(check_case_fantome(p,i,'b')==1)
+									{
+										effacement_fantomes(p,i);
+										p.fantomes[i].l+=1;
+										nouveau_fantomes(p,i);
+									}
+									else
+									{
+										check_case_libre(p,i);	
+									}
+									break;
+							}
+						}
+				}
+			if(p.fantomes[i].c==p.pacman.c && p.fantomes[i].l==p.pacman.l)
+			{
+				p.isdead+=1;
+			}
+		}
+	return p;
+		
+	}
+
+void check_case_libre(Partie p,int i)
+	{
+		if (check_case_fantome(p,i,'h')==1)
+		{
+			effacement_fantomes(p,i);
+			p.fantomes[i].l-=1;
+			nouveau_fantomes(p,i);				
+		}
+		else if(check_case_fantome(p,i,'d')==1)
+		{
+			effacement_fantomes(p,i);
+			p.fantomes[i].c+=1;
+			nouveau_fantomes(p,i);
+		}
+		else if(check_case_fantome(p,i,'g')==1)
+		{
+			effacement_fantomes(p,i);
+			p.fantomes[i].c-=1;
+			nouveau_fantomes(p,i);
+		}
+		else if(check_case_fantome(p,i,'b')==1)
+		{
+			effacement_fantomes(p,i);
+			p.fantomes[i].l+=1;
+			nouveau_fantomes(p,i);
+		}
+		else
+		{
+			printf("Fantome %d ne bouge pas\n",i);
+			effacement_fantomes(p,i);
+			nouveau_fantomes(p,i);
+		}
+	}
+
+void effacement_fantomes(Partie p,int i)//fonction chargé d'effacé le sprite de l'ancien fantome
+	{
+		char position_ancien_fantome=p.plateau[p.fantomes[i].l][p.fantomes[i].c];
+		if(position_ancien_fantome==FANTOME)
+			{
+				p.plateau[p.fantomes[i].l][p.fantomes[i].c]=VIDE;
+			}
+		dessiner_sprite(p,p.fantomes[i]);
+	}
+void nouveau_fantomes(Partie p,int i)
+	{
+
+		int x=p.fantomes[i].c*SIZEX;
+		int y=p.fantomes[i].l*SIZEY;
+		Point position={x,y};
+		if(i==0)
+		{
+			afficher_image("BMP/fantome_bleu.bmp",position);
+		}
+		else if(i==1)
+		{
+			afficher_image("BMP/fantome_rose.bmp",position);
+		}
+		else if(i==2)
+		{
+			afficher_image("BMP/fantome_vert.bmp",position);
+		}
+		else
+		{
+			afficher_image("BMP/fantome_jaune.bmp",position);
+		}
+		actualiser();	
+	}
+
+int check_fantome(int c,int l)//check si la case est un fantome
+	{
+		int x=(c*SIZEX);
+		int y=(l*SIZEY); 
+		Point point_fantome={x,y};
+		if(couleur_point(point_fantome)==65536)
+		{
+			printf("FANTOMMMMMMMEEEE couleur du point=%d\n",couleur_point(point_fantome));
+			return 1;
+		}
+		else
+		{
+			printf("couleur du point=%d\n",couleur_point(point_fantome));
+			return 0;
+		}
+	}
+int check_case_fantome(Partie p,int i,char a)
+	{
+		switch(a){
+			case 'd': ;
+				char position_nouveau_fantome_droit=p.plateau[p.fantomes[i].l][p.fantomes[i].c+1];
+				if(position_nouveau_fantome_droit==MUR||check_fantome(p.fantomes[i].c+1,p.fantomes[i].l))
+				{
+					return 0;
+				}
+				else
+				{
+					return 1;
+				}
+				break;
+			case 'g': ;
+				char position_nouveau_fantome_gauche=p.plateau[p.fantomes[i].l][p.fantomes[i].c-1];
+				if(position_nouveau_fantome_gauche==MUR||check_fantome(p.fantomes[i].c-1,p.fantomes[i].l))
+				{
+					return 0;
+				}
+				else
+				{
+					return 1;
+				}
+				break;
+			case 'h': ;
+				char position_nouveau_fantome_haut=p.plateau[p.fantomes[i].l-1][p.fantomes[i].c];
+				if(position_nouveau_fantome_haut==MUR||check_fantome(p.fantomes[i].c,p.fantomes[i].l-1))
+				{
+					return 0;
+				}
+				else
+				{
+					return 1;
+				}
+				break;
+			case 'b': ;
+				char position_nouveau_fantome_bas=p.plateau[p.fantomes[i].l+1][p.fantomes[i].c];
+				if(position_nouveau_fantome_bas==MUR||check_fantome(p.fantomes[i].c,p.fantomes[i].l+1))
+				{
+					return 0;
+				}
+				else
+				{
+					return 1;
+				}
+				break;
+			default:
+				return 0;
+				break;
 		}
 	}
 	
@@ -381,28 +713,30 @@ void dessiner_sprite(Partie p, Pos pos)
 		switch (c)
 			{
 				case VIDE:
-					dessiner_rectangle(point,SIZEX,SIZEY,blanc);
+					dessiner_rectangle(point,SIZEX,SIZEY,noir);
 					break;
 				case POINT:
-					dessiner_rectangle(point,SIZEX,SIZEY,blanc);
+					dessiner_rectangle(point,SIZEX,SIZEY,noir);
 					centre.x = point.x + SIZEX/2;
 					centre.y = point.y + SIZEY/2;
 					dessiner_disque(centre,(int)SIZEX/4,jaune);
 					break;
 				case MUR:
-					dessiner_rectangle(point,SIZEX,SIZEY,noir);
+					//dessiner_rectangle(point,SIZEX,SIZEY,vert);
+					afficher_image("BMP/MUR.bmp",point);
 					break;
 				case BONUS:
-					dessiner_rectangle(point,SIZEX,SIZEY,blanc);
+					dessiner_rectangle(point,SIZEX,SIZEY,noir);
 					centre.x = point.x + SIZEX/2;
 					centre.y = point.y + SIZEY/2;
 					dessiner_disque(centre,(int)SIZEX/2,jaune);
 					break;
 				case FANTOME:
-					dessiner_rectangle(point,SIZEX,SIZEY,rouge);
+					dessiner_rectangle(point,SIZEX,SIZEY,0x010000);
 					break;
 				case PACMAN:
-					dessiner_rectangle(point,SIZEX,SIZEY,bleu);
+					//dessiner_rectangle(point,SIZEX,SIZEY,bleu);
+					afficher_image("BMP/pacman_ouvert_droit.bmp",point);
 					break;
 				default:
 					break;
@@ -511,10 +845,13 @@ void Start_Menu(Partie p)
 	
 	else if(choice == 2)
 	{
-		/* fonction voir scores */
+		view_scores(p);
 	}
 	else if(choice == 3)
-		fin_graphique();
+	{
+		fermer_fenetre();
+		exit(0);
+	}
 }
 
 void write_score(int score)
@@ -538,3 +875,89 @@ void write_score(int score)
 		fclose(scores);
 	}
 }
+
+int Get_gum_number(Partie p)
+{
+	int res = 0;
+	for(int i = 0; i < p.L; i++)
+	{
+		for(int j = 0; j < p.C; j++)
+		{
+			if (p.plateau[i][j] == POINT)
+			{
+				res++;
+			}
+		}
+	}
+	return res;
+}
+void view_scores(Partie p)
+{
+	printf("viewing scores:\n");
+	int longueur = p.C * SIZEX;
+	int hauteur = p.L * SIZEY;
+	FILE *file;
+	int i = 0;
+	int score;
+	char nomJoueur[TAILLENOM];
+	Score scoretab[500]; // OMG pas plus de 500 scores !! Bug du 500ième niveau?????
+	char filePath[] = "data/scores";
+	file = fopen(filePath,"r");
+
+	while(fscanf(file,"%s%d",nomJoueur,&score) != EOF) // lecture du fichier scores, enregistrement de la lecture dans le tableau de Score scoretab
+	{
+		strcpy(scoretab[i].nom,nomJoueur);
+		scoretab[i].score = score;
+		i++;
+	}
+	fclose(file);
+
+	bubbleSort(scoretab,i);
+
+	if(i > 10)
+	{
+		i = 10;	// i est le nombre de scores que la fonction va afficher, on ne veut pas en afficher plus de 10
+	}
+
+
+	Point hg = {0,0};
+	Point texte = {longueur/3,10};
+	dessiner_rectangle(hg,longueur,hauteur,blanc);	// affichage de l'arrière-plan
+
+	for(int j = i - 1; j >= 0; j--)	// conversion des Score en str et affichage graphique
+	{
+		char str[TAILLENOM+TAILLESCORE];
+		sprintf(str, "%s %d", scoretab[j].nom,scoretab[j].score);
+		printf("%s\n",str);
+		afficher_texte(str,TAILLETEXTE,texte,rouge);
+		texte.y += 30;
+	}
+	afficher_texte("Press q to quit",TAILLETEXTE,texte,bleu);
+	actualiser();
+
+	// Attente de la sortie et retour au menu
+	int touche = attendre_touche();
+	while(touche != SDLK_q)
+	{
+		touche = attendre_touche();
+	}
+	Start_Menu(p);
+}
+void swap(Score *xp, Score *yp) 
+{ 
+    Score temp = *xp; 
+    *xp = *yp; 
+    *yp = temp; 
+} 
+  
+// A function to implement bubble sort 
+void bubbleSort(Score arr[], int n) 
+{ 
+   int i, j; 
+   for (i = 0; i < n-1; i++)       
+  
+       // Last i elements are already in place    
+       for (j = 0; j < n-i-1; j++)  
+           if (arr[j].score > arr[j+1].score) 
+              swap(&arr[j], &arr[j+1]); 
+} 

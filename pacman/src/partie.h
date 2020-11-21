@@ -37,7 +37,14 @@ typedef struct partie {
     int     nbbonus; // le nombre de bonus restants à manger
     int     LONGUEUR; // longueur fenêtre graphique
     int     HAUTEUR; // hauteur fenêtre graphique
+    int		isdead; // 1 si pacman est mort, 0 sinon
+    int     level; // à quel niveau se situe-ton?
     } Partie;
+
+typedef struct score { // permet de faire des tableaux de scores
+    char nom[TAILLENOM]; //
+    int score; 
+} Score;
 
 // PROTOTYPES
 /* charge_plan : lit un fichier contenant un plateau de jeu et le charge
@@ -64,3 +71,31 @@ void Start_Menu(Partie p); // dessine le menu et gère les choix du joueur, avec
 
 void write_score(int score); // demande le nom du joueur sur le bash et écrit son nom + son score dans le fichier score
 #endif
+
+Partie deplacement_fantomes(Partie p);
+
+int check_fantome(int c,int l);
+
+int check_case_fantome(Partie p,int i,char a);
+
+void check_case_libre(Partie p,int i);
+
+void effacement_fantomes(Partie p,int i);
+
+void nouveau_fantomes(Partie p,int i);
+
+int check_case_droite_fantomes(Partie p,int i);
+
+int check_case_gauche_fantomes(Partie p,int i);
+
+int check_case_haut_fantomes(Partie p,int i);
+
+int check_case_bas_fantomes(Partie p,int i);
+
+int Get_gum_number(Partie p); // obtient le nombre de gum restants
+
+void view_scores(Partie p); // montre les 10 meilleurs scores
+
+void swap(Score *xp, Score *yp); // fonction auxiliaire au bubbleSort
+
+void bubbleSort(Score arr[], int n); // algorithme de tri pour un tableau de score de longueur n
