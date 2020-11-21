@@ -380,12 +380,16 @@ Partie deplacement_fantomes(Partie p)
 									}
 									else
 									{
-										check_case_libre(p,i);
+										check_case_libre(p,i);	
 									}
 									break;
 							}
 						}
 				}
+			if(p.fantomes[i].c==p.pacman.c && p.fantomes[i].l==p.pacman.l)
+			{
+				p.isdead+=1;
+			}
 		}
 	return p;
 		
