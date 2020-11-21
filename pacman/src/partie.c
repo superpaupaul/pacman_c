@@ -732,7 +732,7 @@ void dessiner_sprite(Partie p, Pos pos)
 					dessiner_disque(centre,(int)SIZEX/2,jaune);
 					break;
 				case FANTOME:
-					dessiner_rectangle(point,SIZEX,SIZEY,rouge);
+					dessiner_rectangle(point,SIZEX,SIZEY,0x010000);
 					break;
 				case PACMAN:
 					dessiner_rectangle(point,SIZEX,SIZEY,bleu);
