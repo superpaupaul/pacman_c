@@ -191,22 +191,35 @@ void fin_graphique()
 
 void lancer_partie(Partie p)
 	{
+		p.bouche = 0;
+		p.isdead = 0;
+		p.bonus = 0;
+		p.direction = 1;
+		int rand = 1;
+		int touche = 0;
+		int ancienne_touche = 0;
 		affiche_plan(p);
 		actualiser();
-		p.isdead = 0;
 		while(p.isdead == 0)
 		{
+			cleanNavbar(p);
+
 			if(Get_gum_number(p) == 0) // il faut l'envoyer sur l'autre niveau
 			{
 				p.level++;
 				switch(p.level)
 				{
+					Partie new;
 					case 2:
-						charge_plan("pathtoleveltwo");
-						lancer_partie(p);
+						new = charge_plan("data/test.txt");
+						new.level = 2;
+						lancer_partie(new);
 						break;
 					case 3:
-						// machin
+						new = charge_plan("pathtolevelthree");
+						new.level = 3;
+						lancer_partie(new);
+						break;
 					default:
 						printf("Vous avez terminé le jeu");
 						attendre_clic();
@@ -214,16 +227,42 @@ void lancer_partie(Partie p)
 						break;
 				}
 			}
-			int touche = attendre_touche();
+
+			touche = attendre_touche_duree(180);
+
+			if(touche == 0)	// si le joueur n'a pas appuyé sur une touche, on garde l'ancienne pour qu'il continue dans une direction
+			{
+				touche = ancienne_touche;
+			}
+
 			p = deplacement_joueur(p, touche);
-			p = deplacement_fantomes(p);
+
+
+			// Déplacement fantômes une fois sur deux pour ralentir les fantômes
+			if(rand)
+			{
+				p = deplacement_fantomes(p);
+				rand = 0;
+			}
+			else
+				rand = 1;
+
+			ancienne_touche = touche;
+
+			// Alternance bouche pac-man ouverte/fermée
+			if (p.bouche)
+				p.bouche = 0;
+			else
+				p.bouche = 1;
+
 			actualiser();
-			attente(200);
-			
 
 		}
-		// il est mort
-		printf("T'es mort\n");
+		// fin de la partie, assignement du score à un nom
+		p.level = 1;
+		printf("Vous êtes mort :(\n");
+		printf("Score: %d\n",p.score);
+		write_score(p.score);
 		Start_Menu(p);
 	}
 
@@ -554,19 +593,34 @@ Partie deplacement_joueur(Partie p, int touche)
 						char_dest = p.plateau[pac.l][pac.c - 1]; // le char du plateau là où le joueur veut aller
 					}
 	
-					if (char_dest == VIDE || char_dest == POINT || char_dest == BONUS)
+					if (char_dest == VIDE || char_dest == POINT || char_dest == BONUS || char_dest == FANTOME)
 					{
 						if (char_dest == BONUS)
 						{
-							/* à implémenter */
+							p.score += 50;
+							gotPoints(50);
 						}
 						if (char_dest == POINT)
 						{
-							/* code */
+							p.score += 10;
+						}
+						if(char_dest == FANTOME)
+						{
+							if(p.bonus == 0) // si pacman va sur le fantôme et qu'il n'est pas sous l'emprise du bonus
+							{
+								p.isdead = 1;
+							}
+							else
+							{
+								p.score += 400;
+								gotPoints(400);
+								// fantome doit disparaitre
+							}
 						}
 
 						p.plateau[pac.l][pac.c] = VIDE; // remplace le 'P' dans le plateau par un ' '
 						dessiner_sprite(p,pac); // redessine le ' ' à l'ancienne place de pacman
+						p.direction = 3; // on indique la direction pour dessiner_sprite dans le bon sens
 
 						if (tunnel)
 						{
@@ -598,18 +652,34 @@ Partie deplacement_joueur(Partie p, int touche)
 					{
 						char_dest = p.plateau[pac.l - 1][pac.c];
 					}
-					if (char_dest == VIDE || char_dest == POINT || char_dest == BONUS)
+					if (char_dest == VIDE || char_dest == POINT || char_dest == BONUS || char_dest == FANTOME)
 					{
 						if (char_dest == BONUS)
 						{
-							/* à implémenter */
+							p.score += 50;
+							gotPoints(50);
 						}
 						if (char_dest == POINT)
 						{
-							/* code */
+							p.score += 10;
 						}
+						if(char_dest == FANTOME)
+						{
+							if(p.bonus == 0) // si pacman va sur le fantôme et qu'il n'est pas sous l'emprise du bonus
+							{
+								p.isdead = 1;
+							}
+							else
+							{
+								p.score += 400;
+								gotPoints(400);
+								// fantome doit disparaitre
+							}
+						}
+
 						p.plateau[pac.l][pac.c] = VIDE;
 						dessiner_sprite(p,pac);
+						p.direction = 0;
 						if (tunnel)
 						{
 							p.plateau[p.L - 1][pac.c] = PACMAN;
@@ -635,18 +705,34 @@ Partie deplacement_joueur(Partie p, int touche)
 						char_dest = p.plateau[pac.l][pac.c + 1];
 					}
 					
-					if (char_dest == VIDE || char_dest == POINT || char_dest == BONUS)
+					if (char_dest == VIDE || char_dest == POINT || char_dest == BONUS || char_dest == FANTOME)
 					{
 						if (char_dest == BONUS)
 						{
-							/* à implémenter */
+							p.score += 50;
+							gotPoints(50);
 						}
 						if (char_dest == POINT)
 						{
-							/* code */
+							p.score += 10;
 						}
+						if(char_dest == FANTOME)
+						{
+							if(p.bonus == 0) // si pacman va sur le fantôme et qu'il n'est pas sous l'emprise du bonus
+							{
+								p.isdead = 1;
+							}
+							else
+							{
+								p.score += 400;
+								gotPoints(400);
+								// fantome doit disparaitre
+							}
+						}
+
 						p.plateau[pac.l][pac.c] = VIDE;
 						dessiner_sprite(p,pac);
+						p.direction = 1;
 						if (tunnel)
 						{
 							p.plateau[pac.l][0] = PACMAN;
@@ -672,18 +758,34 @@ Partie deplacement_joueur(Partie p, int touche)
 						char_dest = p.plateau[pac.l + 1][pac.c];
 					}
 					
-					if (char_dest == VIDE || char_dest == POINT || char_dest == BONUS)
+					if (char_dest == VIDE || char_dest == POINT || char_dest == BONUS || char_dest == FANTOME)
 					{
 						if (char_dest == BONUS)
 						{
-							/* à implémenter */
+							p.score += 50;
+							gotPoints(50);
 						}
 						if (char_dest == POINT)
 						{
-							/* code */
+							p.score += 10;
 						}
+						if(char_dest == FANTOME)
+						{
+							if(p.bonus == 0) // si pacman va sur le fantôme et qu'il n'est pas sous l'emprise du bonus
+							{
+								p.isdead = 1;
+							}
+							else
+							{
+								p.score += 400;
+								gotPoints(400);
+								// fantome doit disparaitre
+							}
+						}
+
 						p.plateau[pac.l][pac.c] = VIDE;
 						dessiner_sprite(p,pac);
+						p.direction = 2;
 						if (tunnel)
 						{
 							p.plateau[0][pac.c] = PACMAN;
@@ -697,6 +799,9 @@ Partie deplacement_joueur(Partie p, int touche)
 						dessiner_sprite(p,pac);
 					}
 					break;
+				case SDLK_ESCAPE:
+					fermer_fenetre();
+					exit(0);
 				default:
 					printf("Touche inconnue\n");
 					break;
@@ -728,7 +833,7 @@ void dessiner_sprite(Partie p, Pos pos)
 				case BONUS:
 					dessiner_rectangle(point,SIZEX,SIZEY,noir);
 					centre.x = point.x + SIZEX/2;
-					centre.y = point.y + SIZEY/2;
+					centre.y = point.y + SIZEY/2;	
 					dessiner_disque(centre,(int)SIZEX/2,jaune);
 					break;
 				case FANTOME:
@@ -736,7 +841,59 @@ void dessiner_sprite(Partie p, Pos pos)
 					break;
 				case PACMAN:
 					//dessiner_rectangle(point,SIZEX,SIZEY,bleu);
-					afficher_image("BMP/pacman_ouvert_droit.bmp",point);
+					switch(p.direction)
+					{
+						case 0: // UP
+							if(p.bouche) // bouche ouverte
+							{
+								afficher_image("BMP/pacman_ouvert_haut.bmp",point);
+								p.bouche = 0;
+							}
+							else
+							{
+								afficher_image("BMP/pacman_ferme_haut.bmp",point);
+								p.bouche = 1;
+							}
+							break;
+						case 1: // RIGHT
+							if(p.bouche)
+							{
+								afficher_image("BMP/pacman_ouvert_droit.bmp",point);
+								p.bouche = 0;
+							}
+							else
+							{
+								afficher_image("BMP/pacman_ferme_droit.bmp",point);
+								p.bouche = 1;
+							}
+							break;
+						case 2: // DOWN 
+							if(p.bouche)
+							{
+								afficher_image("BMP/pacman_ouvert_bas.bmp",point);
+								p.bouche = 0;
+							}
+							else
+							{
+								afficher_image("BMP/pacman_ferme_bas.bmp",point);
+								p.bouche = 1;
+							}
+							break;
+						case 3: // LEFT
+							if(p.bouche)
+							{
+								afficher_image("BMP/pacman_ouvert_gauche.bmp",point);
+								p.bouche = 0;
+							}
+							else
+							{
+								afficher_image("BMP/pacman_ferme_gauche.bmp",point);
+								p.bouche = 1;
+							}
+							break;
+						default: // weird..
+							break;
+					}
 					break;
 				default:
 					break;
@@ -961,3 +1118,21 @@ void bubbleSort(Score arr[], int n)
            if (arr[j].score > arr[j+1].score) 
               swap(&arr[j], &arr[j+1]); 
 } 
+
+
+void gotPoints(int x)
+{
+	Point p = {0,0};
+	char buf[6];
+	sprintf(buf,"+%d",x);
+	printf("%s\n",buf);
+	afficher_texte(buf,TAILLETEXTE,p,rouge);
+}
+
+void cleanNavbar(Partie p){
+	for (int i = 0; i < p.C; ++i)
+	{
+		Pos pos = {0,i};
+		dessiner_sprite(p,pos);
+	}
+}

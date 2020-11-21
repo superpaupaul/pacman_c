@@ -45,7 +45,7 @@ int main(int argc, char **argv)
 /******************************************************************************/
     p.LONGUEUR = p.C * SIZEX;
     p.HAUTEUR = p.L * SIZEY;
-
+    p.level = 1;
     // DEBUT SESSION GRAPHIQUE
 	debut_graphique(p);
     Start_Menu(p);

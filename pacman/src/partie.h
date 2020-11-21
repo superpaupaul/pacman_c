@@ -39,6 +39,10 @@ typedef struct partie {
     int     HAUTEUR; // hauteur fenêtre graphique
     int		isdead; // 1 si pacman est mort, 0 sinon
     int     level; // à quel niveau se situe-ton?
+    int     score; // le score du joueur
+    int     direction; // direction 0 UP; 1 RIGHT; 2 DOWN; 3 LEFT
+    int     bouche; // bouche de pacman ouverte / fermée ? 1 / 0
+    int     bonus; // bonus à 0 si il ne fait plus effet
     } Partie;
 
 typedef struct score { // permet de faire des tableaux de scores
@@ -99,3 +103,7 @@ void view_scores(Partie p); // montre les 10 meilleurs scores
 void swap(Score *xp, Score *yp); // fonction auxiliaire au bubbleSort
 
 void bubbleSort(Score arr[], int n); // algorithme de tri pour un tableau de score de longueur n
+
+void gotPoints(int x); // écris +x graphiquement, selon la valeur de ce qui est mangé
+
+void cleanNavbar(Partie p); // redessine la première ligne du plateau
