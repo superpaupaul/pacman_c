@@ -735,7 +735,8 @@ void dessiner_sprite(Partie p, Pos pos)
 					dessiner_rectangle(point,SIZEX,SIZEY,0x010000);
 					break;
 				case PACMAN:
-					dessiner_rectangle(point,SIZEX,SIZEY,bleu);
+					//dessiner_rectangle(point,SIZEX,SIZEY,bleu);
+					afficher_image("BMP/pacman_ouvert_droit.bmp",point);
 					break;
 				default:
 					break;
