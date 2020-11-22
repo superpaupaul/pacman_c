@@ -321,6 +321,7 @@ int entier_aleatoire(int n) ;
 #define whitesmoke           0xF5F5F5
 #define yellow               0xFFFF00
 #define yellowgreen          0x9ACD32
+#define black2				 0x010000
 
 
 #endif
