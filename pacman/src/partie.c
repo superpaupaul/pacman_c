@@ -213,11 +213,13 @@ void lancer_partie(Partie p)
 					case 2:
 						new = charge_plan("data/test.txt");
 						new.level = 2;
+						new.score = p.score;
 						lancer_partie(new);
 						break;
 					case 3:
-						new = charge_plan("pathtolevelthree");
+						new = charge_plan("data/level3.txt");
 						new.level = 3;
+						new.score = p.score;
 						lancer_partie(new);
 						break;
 					default:
@@ -260,7 +262,7 @@ void lancer_partie(Partie p)
 		}
 		// fin de la partie, assignement du score à un nom
 		p.level = 1;
-		printf("Vous êtes mort :(\n");
+		printf("Fin du jeu\n");
 		printf("Score: %d\n",p.score);
 		write_score(p.score);
 		Start_Menu(p);
