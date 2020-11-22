@@ -270,11 +270,11 @@ void lancer_partie(Partie p)
 
 Partie deplacement_fantomes(Partie p)
 	{
-		if (p.bonus>0)
+		if (p.bonus>0)//compteur du temps d'effet du bonus
 		{
 			p.bonus-=1;
 		}
-		for (int i = 0; i < 4; ++i)
+		for (int i = 0; i < 4; ++i)//boucle pour switch entre les différents fantomes
 		{
 			int delta_x = p.pacman.c-p.fantomes[i].c;//différence de position x entre pacman et le fantome
 			int delta_y = p.pacman.l-p.fantomes[i].l;//différence de position y entre pacman et le fantome
@@ -430,16 +430,20 @@ Partie deplacement_fantomes(Partie p)
 				}
 			
 			
-			if((p.fantomes[i].c==p.pacman.c) && (p.fantomes[i].l==p.pacman.l) && (p.bonus==0))
+			if((p.fantomes[i].c==p.pacman.c) && (p.fantomes[i].l==p.pacman.l) && (p.bonus==0))//si pacman n'est pas sous l'effet d'un bonus, il meurt au contact d'un fantome
 			{
 				p.isdead+=1;
 			}
-			else if(p.fantomes[i].c==p.pacman.c && p.fantomes[i].l==p.pacman.l && p.bonus>0)
+			else if(p.fantomes[i].c==p.pacman.c && p.fantomes[i].l==p.pacman.l && p.bonus>0)//reapparition des fantomes s'ils meurent
 			{
 				effacement_fantomes(p,i);
-				//printf("reapparition fantome %d en l=%d,c=%d\n",i,p.reapparition[i].l,p.reapparition[i].c);
-				p.fantomes[i].l=p.reapparition[i].l;
-				p.fantomes[i].c=p.reapparition[i].c;
+				//p.fantomes[i].l=p.reapparition.l;
+				//p.fantomes[i].c=p.reapparition.c;
+				p.fantomes[i].l=12;
+				p.fantomes[i].c=11;
+				p.score += 200;
+				printf("p.bonus=%d",p.bonus);
+				gotPoints(200);
 				nouveau_fantomes(p,i);
 				
 			}
@@ -448,7 +452,7 @@ Partie deplacement_fantomes(Partie p)
 		
 	}
 
-void check_case_libre(Partie p,int i)
+void check_case_libre(Partie p,int i)//fonction permettant de faire déplacer pacman sur une case vide autour de lui
 	{
 		if (check_case_fantome(p,i,'h')==1)
 		{
@@ -476,26 +480,24 @@ void check_case_libre(Partie p,int i)
 		}
 		else
 		{
-			printf("Fantome %d ne bouge pas\n",i);
-			//effacement_fantomes(p,i);
-			//nouveau_fantomes(p,i);
+			//le fantome ne bouge pas
 		}
 	}
 
-void effacement_fantomes(Partie p,int i)//fonction chargé d'effacé le sprite de l'ancien fantome
+Partie effacement_fantomes(Partie p,int i)//fonction chargé d'effacé le sprite de l'ancien fantome
 	{
 		char position_ancien_fantome=p.plateau[p.fantomes[i].l][p.fantomes[i].c];
 		if(position_ancien_fantome==FANTOME)
 			{
-				p.reapparition[i].l=p.fantomes[i].l;
-				p.reapparition[i].c=p.fantomes[i].c;
-				printf("enregistrement reapparition fantome %d\np.reapparition[i].l= %d, p.reapparition[i].c= %d\n",i,p.reapparition[i].l,p.reapparition[i].c);
+				//Ce qu'on aurait aimé utiliser pour faire réapparaitre les fantomes:
+				//p.reapparition.l=p.fantomes[i].l;
+				//p.reapparition.c=p.fantomes[i].c;
 				p.plateau[p.fantomes[i].l][p.fantomes[i].c]=VIDE;
 			}
 		dessiner_sprite(p,p.fantomes[i]);
-		//printf("reapparition fantome %d en l=%d,c=%d\n",i,p.reapparition[i].l,p.reapparition[i].c);
+		return p;
 	}
-void nouveau_fantomes(Partie p,int i)
+void nouveau_fantomes(Partie p,int i)//fonction créant un nouveau fantome en fonction de sa couleur
 	{
 
 		int x=p.fantomes[i].c*SIZEX;
@@ -541,7 +543,7 @@ int check_fantome(int c,int l)//check si la case est un fantome
 			return 0;
 		}
 	}
-int check_case_fantome(Partie p,int i,char a)
+int check_case_fantome(Partie p,int i,char a)//renvoi si oui ou non la case désigné est disponible pour le fantome
 	{
 		switch(a){
 			case 'd': ;

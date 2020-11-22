@@ -17,6 +17,12 @@ L'interaction avec le système en C est assez compliqué, je n'aurait jamais pen
 A la fin de la partie, on demande donc le nom d'utilisateur dans la CLI et ce nom sera associé au score. Cependant, les scores prennent + 30 000 quelquefois, bug non résolu, peut-être s'agirait-il d'un \n oublié?
 Sinon, tout fonctionne.
 
+[Déplacement fantomes]
+L'étape de développement du comportement des fantomes dut assez rapides mais la résolution des bugs nous pris assez longtemps, maintenant presque tout est réglé sauf un bug de fantome qui ne s'efface parfois pas lorsqu'il est bloqué par un autre fantome
+
+[Bonus]
+Les bonus permettant à pacman de devenir invincible son fonctionnel, mais nous n'avons pas incorporé une AI propre aux fantomes effrayés. Le lieu de réapparition des fantomes est fixe.
+
 
 [Graphismes]
 Nous sommes restés sobres pour les graphiqmes du menu, il est fonctionnel et c'est ce qui nous intéresse, de plus, nous nous sommes concentrés sur une taille de fenêtre précise: 675*525 pixels pour avoir des cases de 25*25 pixels et donc faire des jolis sprites, qui ne s'adapteraient pas à une taille de fenêtre différente /// A TOI DE JOUER
