@@ -268,12 +268,14 @@ void lancer_partie(Partie p)
 
 Partie deplacement_fantomes(Partie p)
 	{
+		if (p.bonus>0)
+		{
+			p.bonus-=1;
+		}
 		for (int i = 0; i < 4; ++i)
 		{
 			int delta_x = p.pacman.c-p.fantomes[i].c;//différence de position x entre pacman et le fantome
 			int delta_y = p.pacman.l-p.fantomes[i].l;//différence de position y entre pacman et le fantome
-			
-				
 			switch(abs(delta_x)>abs(delta_y))//on commence avec le cas où l'abcisse serait plus grande que l'ordonnée
 				{
 					case 1:
@@ -315,7 +317,6 @@ Partie deplacement_fantomes(Partie p)
 						}
 						else
 						{
-							printf("%d à dx<0\n",i);
 							switch(check_case_fantome(p,i,'g'))
 							{
 								case 1:
@@ -425,9 +426,20 @@ Partie deplacement_fantomes(Partie p)
 							}
 						}
 				}
-			if(p.fantomes[i].c==p.pacman.c && p.fantomes[i].l==p.pacman.l)
+			
+			
+			if((p.fantomes[i].c==p.pacman.c) && (p.fantomes[i].l==p.pacman.l) && (p.bonus==0))
 			{
 				p.isdead+=1;
+			}
+			else if(p.fantomes[i].c==p.pacman.c && p.fantomes[i].l==p.pacman.l && p.bonus>0)
+			{
+				effacement_fantomes(p,i);
+				//printf("reapparition fantome %d en l=%d,c=%d\n",i,p.reapparition[i].l,p.reapparition[i].c);
+				p.fantomes[i].l=p.reapparition[i].l;
+				p.fantomes[i].c=p.reapparition[i].c;
+				nouveau_fantomes(p,i);
+				
 			}
 		}
 	return p;
@@ -463,8 +475,8 @@ void check_case_libre(Partie p,int i)
 		else
 		{
 			printf("Fantome %d ne bouge pas\n",i);
-			effacement_fantomes(p,i);
-			nouveau_fantomes(p,i);
+			//effacement_fantomes(p,i);
+			//nouveau_fantomes(p,i);
 		}
 	}
 
@@ -473,9 +485,13 @@ void effacement_fantomes(Partie p,int i)//fonction chargé d'effacé le sprite d
 		char position_ancien_fantome=p.plateau[p.fantomes[i].l][p.fantomes[i].c];
 		if(position_ancien_fantome==FANTOME)
 			{
+				p.reapparition[i].l=p.fantomes[i].l;
+				p.reapparition[i].c=p.fantomes[i].c;
+				printf("enregistrement reapparition fantome %d\np.reapparition[i].l= %d, p.reapparition[i].c= %d\n",i,p.reapparition[i].l,p.reapparition[i].c);
 				p.plateau[p.fantomes[i].l][p.fantomes[i].c]=VIDE;
 			}
 		dessiner_sprite(p,p.fantomes[i]);
+		//printf("reapparition fantome %d en l=%d,c=%d\n",i,p.reapparition[i].l,p.reapparition[i].c);
 	}
 void nouveau_fantomes(Partie p,int i)
 	{
@@ -483,21 +499,28 @@ void nouveau_fantomes(Partie p,int i)
 		int x=p.fantomes[i].c*SIZEX;
 		int y=p.fantomes[i].l*SIZEY;
 		Point position={x,y};
-		if(i==0)
+		if (p.bonus==0)
 		{
-			afficher_image("BMP/fantome_bleu.bmp",position);
-		}
-		else if(i==1)
-		{
-			afficher_image("BMP/fantome_rose.bmp",position);
-		}
-		else if(i==2)
-		{
-			afficher_image("BMP/fantome_vert.bmp",position);
+			if(i==0)
+			{
+				afficher_image("BMP/fantome_bleu.bmp",position);
+			}
+			else if(i==1)
+			{
+				afficher_image("BMP/fantome_rose.bmp",position);
+			}
+			else if(i==2)
+			{
+				afficher_image("BMP/fantome_vert.bmp",position);
+			}
+			else
+			{
+				afficher_image("BMP/fantome_jaune.bmp",position);
+			}
 		}
 		else
 		{
-			afficher_image("BMP/fantome_jaune.bmp",position);
+			afficher_image("BMP/fantome_bonus.bmp",position);
 		}
 		actualiser();	
 	}
@@ -509,12 +532,10 @@ int check_fantome(int c,int l)//check si la case est un fantome
 		Point point_fantome={x,y};
 		if(couleur_point(point_fantome)==65536)
 		{
-			printf("FANTOMMMMMMMEEEE couleur du point=%d\n",couleur_point(point_fantome));
 			return 1;
 		}
 		else
 		{
-			printf("couleur du point=%d\n",couleur_point(point_fantome));
 			return 0;
 		}
 	}
@@ -576,7 +597,7 @@ Partie deplacement_joueur(Partie p, int touche)
 		int tunnel = 0;
 		Pos pac = Get_Pacman_Pos(p);
 		char char_dest = ' ';
-		printf("Position pacman: ligne %d, colonne %d\n",pac.l,pac.c);
+		//printf("Position pacman: ligne %d, colonne %d\n",pac.l,pac.c);
 		switch(touche)
 			{
 				case SDLK_LEFT:
@@ -598,16 +619,19 @@ Partie deplacement_joueur(Partie p, int touche)
 						if (char_dest == BONUS)
 						{
 							p.score += 50;
+							p.bonus=TPSBONUS;
+							printf("p.bonus=%d",p.bonus);
 							gotPoints(50);
 						}
 						if (char_dest == POINT)
 						{
 							p.score += 10;
 						}
-						if(char_dest == FANTOME)
+						/*if(char_dest == FANTOME)
 						{
 							if(p.bonus == 0) // si pacman va sur le fantôme et qu'il n'est pas sous l'emprise du bonus
 							{
+								
 								p.isdead = 1;
 							}
 							else
@@ -616,7 +640,7 @@ Partie deplacement_joueur(Partie p, int touche)
 								gotPoints(400);
 								// fantome doit disparaitre
 							}
-						}
+						}*/
 
 						p.plateau[pac.l][pac.c] = VIDE; // remplace le 'P' dans le plateau par un ' '
 						dessiner_sprite(p,pac); // redessine le ' ' à l'ancienne place de pacman
@@ -657,13 +681,15 @@ Partie deplacement_joueur(Partie p, int touche)
 						if (char_dest == BONUS)
 						{
 							p.score += 50;
+							p.bonus=TPSBONUS;
+							printf("p.bonus=%d",p.bonus);
 							gotPoints(50);
 						}
 						if (char_dest == POINT)
 						{
 							p.score += 10;
 						}
-						if(char_dest == FANTOME)
+						/*if(char_dest == FANTOME)
 						{
 							if(p.bonus == 0) // si pacman va sur le fantôme et qu'il n'est pas sous l'emprise du bonus
 							{
@@ -675,7 +701,7 @@ Partie deplacement_joueur(Partie p, int touche)
 								gotPoints(400);
 								// fantome doit disparaitre
 							}
-						}
+						}*/
 
 						p.plateau[pac.l][pac.c] = VIDE;
 						dessiner_sprite(p,pac);
@@ -710,13 +736,15 @@ Partie deplacement_joueur(Partie p, int touche)
 						if (char_dest == BONUS)
 						{
 							p.score += 50;
+							p.bonus=TPSBONUS;
+							printf("p.bonus=%d",p.bonus);
 							gotPoints(50);
 						}
 						if (char_dest == POINT)
 						{
 							p.score += 10;
 						}
-						if(char_dest == FANTOME)
+						/*if(char_dest == FANTOME)
 						{
 							if(p.bonus == 0) // si pacman va sur le fantôme et qu'il n'est pas sous l'emprise du bonus
 							{
@@ -728,7 +756,7 @@ Partie deplacement_joueur(Partie p, int touche)
 								gotPoints(400);
 								// fantome doit disparaitre
 							}
-						}
+						}*/
 
 						p.plateau[pac.l][pac.c] = VIDE;
 						dessiner_sprite(p,pac);
@@ -763,13 +791,15 @@ Partie deplacement_joueur(Partie p, int touche)
 						if (char_dest == BONUS)
 						{
 							p.score += 50;
+							p.bonus=TPSBONUS;
+							printf("p.bonus=%d",p.bonus);
 							gotPoints(50);
 						}
 						if (char_dest == POINT)
 						{
 							p.score += 10;
 						}
-						if(char_dest == FANTOME)
+						/*if(char_dest == FANTOME)
 						{
 							if(p.bonus == 0) // si pacman va sur le fantôme et qu'il n'est pas sous l'emprise du bonus
 							{
@@ -781,7 +811,7 @@ Partie deplacement_joueur(Partie p, int touche)
 								gotPoints(400);
 								// fantome doit disparaitre
 							}
-						}
+						}*/
 
 						p.plateau[pac.l][pac.c] = VIDE;
 						dessiner_sprite(p,pac);

@@ -19,6 +19,7 @@
 #define FANTOME 'F'
 #define BONUS 'B'
 #define VIDE ' '
+#define TPSBONUS 15 
 #include "../lib/libgraphique.h" // j'ai ajouté
 // STRUCTURES
 /* Structure Pos: permet de stocker un couple ligne/colonne                   */
@@ -34,6 +35,7 @@ typedef struct partie {
     int     C; // le nb de colonne du plateau de jeu
     Pos     pacman; // la position de Pacman dans le plateau
     Pos     fantomes[NBFANTOMES]; // les positions de chaque fantôme
+    Pos     reapparition[NBFANTOMES]; // les positions de reapparition de chaque fantôme
     int     nbbonus; // le nombre de bonus restants à manger
     int     LONGUEUR; // longueur fenêtre graphique
     int     HAUTEUR; // hauteur fenêtre graphique
