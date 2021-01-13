@@ -63,6 +63,7 @@ We are two students from the UIT of Vélizy, FR. We have created this project fo
 
 ## I want to contribute!
 Did you find a bug? File it in the issues section! Do you know how to fix stuff? Make a pull request! Or perhaps you want to send us a tip? You can do so here!
+
 [![paypal](https://img.shields.io/badge/donate-on%20paypal-0079CD?logo=paypal&style=for-the-badge)](https://paypal.me/pools/c/8w1gMnu5yl)
 
 
