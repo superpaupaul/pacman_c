@@ -1,28 +1,71 @@
-[How-to-use]
-Ce projet a été créé à l'aide d'une librairie graphique, qui utilise SDL.
-Pour pouvoir tester le jeu, il faut donc installer les paquets suivants sur un système Debian: libsdl1.2debian, libsdl1.2-dev, libsdl-ttf2.0-0, libsdl-ttf2.0-dev.
-
-Ensuite, se rendre dans le dossier pacman, éxécuter les commandes suivantes:
-make
-./start.sh
-
-Bon jeu! 
-
-[Déplacement joueur]
-Le squelette du projet étant bien fait et compréhensible, une fois compris, tout s"est à peu près bien passé: à part l'inversion entre Pos{l,c} et Point{x,y} qui a causé pas mal de soucis. Une fois résolue, l'implémentation des tunnels s'est bien passée, ils fonctionnent d'ailleurs horizontalement et verticalement (cf niveau 3).
-
-[Enregistrement / Gestion des scores]
-
-L'interaction avec le système en C est assez compliqué, je n'aurait jamais pensé que faire une boucle while avec un fscanf dedans pourrait parcourir les lignes d'un fichier, tout ça n'était pas très intuitif et l'enregistrement des scores s'est donc avéré assez compliqué. Pour le visionnage des scores, un algorithme de tri va trier tous les scores dans le fichier data/scores et les 10 meilleurs seront affichés à l'écran, le tri par bulle s'est avéré être une bonne solution car il est simple à implémenter et même si ce n'est pas le plus rapide, on parle là d'un tableau de score qui ne peut en contenir que 500, donc cela importe peu.
-A la fin de la partie, on demande donc le nom d'utilisateur dans la CLI et ce nom sera associé au score. Cependant, les scores prennent + 30 000 quelquefois, bug non résolu, peut-être s'agirait-il d'un \n oublié?
-Sinon, tout fonctionne.
-
-[Déplacement fantomes]
-L'étape de développement du comportement des fantomes dut assez rapides mais la résolution des bugs nous pris assez longtemps, maintenant presque tout est réglé sauf un bug de fantome qui ne s'efface parfois pas lorsqu'il est bloqué par un autre fantome
-
-[Bonus]
-Les bonus permettant à pacman de devenir invincible son fonctionnel, mais nous n'avons pas incorporé une AI propre aux fantomes effrayés. Le lieu de réapparition des fantomes est fixe.
+## Pacman 0.5
 
 
-[Graphismes]
-Nous sommes restés sobres pour les graphiqmes du menu, il est fonctionnel et c'est ce qui nous intéresse, de plus, nous nous sommes concentrés sur une taille de fenêtre précise: 675*525 pixels pour avoir des cases de 25*25 pixels et donc faire des jolis sprites, qui ne s'adapteraient pas à une taille de fenêtre différente.
+
+![Pacman](https://i.ibb.co/F4Rk4Tq/Pacman.png)
+
+
+[Pacman 0.5](https://github.com/superpaupaul/pacman_c) is a game created on the occasion of the UIT Pacman Project. The goal was to try to recreate the mythical game using only the C Programming language. For almost two months we have been trying to create our version of Pacman. At the end of the project we were able to design a pacman that was visually but somewhat lacking in fluidity. It’s with great pleasure that we present you our creation: Pacman 0.5
+
+![](https://i.imgur.com/X1FlseB.png)
+*Menu*
+![img](https://i.imgur.com/n01sQf9.png)
+*Hall Of Fame*
+![img](https://i.imgur.com/fnBmphO.png)
+*Level 1*
+![img](https://i.imgur.com/f0sZAQU.png)
+*Level 2*
+![img](https://i.imgur.com/k1RdV3T.png)    
+*Level 3*
+
+## Prerequisites
+This project needs a graphical library which is called SDL in order to work. It is based for Debian systems and needs some dependencies. You can install those by typing:
+`sudo apt install libsdl1.2debian libsdl1.2-dev libsdl-ttf2.0-0 libsdl-ttf2.0-dev`
+    
+## How to use
+The project does not need to be compiled, it has already been.
+Once [downloaded](https://github.com/superpaupaul/pacman_c/archive/master.zip), the project folder will look like this:
+| Item | Description |
+| ------: | -----------: |
+| BMP  | folder containing all the .bmp images needed |
+| data | folder containing all the .txt levels, scores etc |
+| lib    | folder containing the graphical library |
+| obj    | folder containing the obj files |
+| src    | folder containing the code |
+| debug.sh | A script we have used to debug the program |
+| makefile | The file used for compilation |
+| start.sh | The script for starting the program |
+
+---
+
+In order to play you might want to set the start script as executable, so cd into the project folder and type `chmod +x start.sh`
+Once this is done you’re good to go!
+Just type `./start.sh`
+
+## What is working ?
+Even though this project was created by two **great** developers, it has some flaws due to time limits, but it is still ~~very~~ somehow playable. Here is what is working:
+| Functionality | State |
+| ------: | -----------: |
+| menu | works |
+| player movements | works |
+| ghosts movements | works (almost) |
+| pac-gums collecting| works |
+| bonus collecting | works |
+| end game | works |
+| score writing | works |
+| score viewing | works |
+| game restart | not working |
+
+
+
+## Who are we?
+We are two students from the UIT of Vélizy, FR. We have created this project for school purposes.
+
+## I want to contribute!
+Did you find a bug? File it in the issues section! Do you know how to fix stuff? Make a pull request! Or perhaps you want to send us a tip? You can do so here!
+[![paypal](https://img.shields.io/badge/donate-on%20paypal-0079CD?logo=paypal&style=for-the-badge)](https://paypal.me/pools/c/8w1gMnu5yl)
+
+
+
+
+
