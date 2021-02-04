@@ -56,7 +56,7 @@ Even though this project was created by two **great** developers, it has some fl
 | score viewing | works |
 | game restart | not working |
 
-## acknowledgements
+## Acknowledgements
 Of course, we didn't know much about programming since this is our first year, so our teachers helped us a lot. We want to thank Laurent Marsan for giving us a skeleton of the project and teaching us how to get into it, Danièle Gardy who helped us too and special mention to Lin Yu Wang who was always there when we were screaming at our monitors and insulting all of those weird bearded guys who invented the C language. Finally, we'll thank our english teacher, Miss Hoguin without whom we wouldn't be able to write such great and structured phrases.
 
 ## Who are we?
